@@ -8,5 +8,5 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 @RepositoryRestResource(collectionResourceRel = "task", path = "task")
 public interface TaskRepository extends MongoRepository <Task, String> {
-    List<Task> findById(@Param("id") int id);
+    List<Task> findById(@Param("id") String id);
 }
