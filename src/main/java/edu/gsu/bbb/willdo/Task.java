@@ -2,13 +2,16 @@ package edu.gsu.bbb.willdo;
 
 import org.springframework.data.annotation.idI;
 
-public class Task{
-    @Id private int id;
+public class Task {
+    @Id
+    private String id;
 
     private String summary;
     private String description;
     private String date;
     private boolean state;
+
+    public Task() {}
 
     public String getSummary() {
         return summary;
