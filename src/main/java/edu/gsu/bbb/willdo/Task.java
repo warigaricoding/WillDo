@@ -13,6 +13,8 @@ public class Task {
 
     public Task() {}
 
+    public String getId() { return id; }
+
     public String getSummary() {
         return summary;
     }
