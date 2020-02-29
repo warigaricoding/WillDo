@@ -12,12 +12,12 @@ public class TaskController {
     @Autowired
     TaskRepository repository;
 
-    @GetMapping("/tasks")
+    @GetMapping("/tasks") //get all tasks
     public List<Task> all() {
         return repository.findAll();
     }
 
-    @GetMapping("/tasks/{id}")
+    @GetMapping("/tasks/{id}") //get one specific task
     public Optional<Task> task(@PathVariable String id) {
         Optional<Task> findTask = repository.findById(id);
         Optional<Task> empty = Optional.empty(); //to see if it leaves loop
@@ -30,7 +30,7 @@ public class TaskController {
         return empty; //should not return this ever
     }
 
-    @PostMapping("/tasks")
+    @PostMapping("/tasks") //saves new task as new doc in DB
     public Object newTask(@RequestBody Task newTask) {
         Optional<Task> empty = Optional.empty(); //to see if it leaves loop
 
@@ -42,7 +42,7 @@ public class TaskController {
         return empty; //should not return this ever
     }
 
-    @PutMapping("/tasks/{id}")
+    @PutMapping("/tasks/{id}") //updates task already in DB
     public Task updateTask(@RequestBody Task newTask, @PathVariable String id) {
         if (repository.findById(id).isPresent()) {
             Optional<Task> oldTaskInfo = repository.findById(id)
@@ -63,6 +63,6 @@ public class TaskController {
                         return repository.save(task);
                     });
         }
-        return newTask;
+        return newTask; //sends original request body so we can see what broke it
     }
 }
