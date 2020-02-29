@@ -42,8 +42,27 @@ public class TaskController {
         return empty; //should not return this ever
     }
 
-//    @PutMapping("/tasks/{id}")
-//    public Task updateTask(@RequestBody Task newTask, @PathVariable String id) {
-//
-//    }
+    @PutMapping("/tasks/{id}")
+    public Task updateTask(@RequestBody Task newTask, @PathVariable String id) {
+        if (repository.findById(id).isPresent()) {
+            Optional<Task> oldTaskInfo = repository.findById(id)
+                    .map(task -> {
+                        if (newTask.getSummary() != null) {
+                            task.setSummary(newTask.getSummary());
+                        }
+                        if (newTask.getDescription() != null) {
+                            task.setDescription(newTask.getDescription());
+                        }
+                        if (newTask.getDate() != null) {
+                            task.setDate(newTask.getDate());
+                        }
+                        if (newTask.isState() != task.isState()
+                                && newTask.isState()) {
+                            task.setState(newTask.isState());
+                        }
+                        return repository.save(task);
+                    });
+        }
+        return newTask;
+    }
 }
