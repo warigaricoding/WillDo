@@ -1,8 +1,8 @@
 # WillDo
 
-See `index.html` for an overview of the project structure
+See [`src/index.html`](src/index.html) for an overview of the project structure
 
-Node.js `https://nodejs.org/en/download/` is needed to build the client,
+[Node.js](https://nodejs.org/en/download/) is needed to build the client;
 other prequisites are portably installed into this folder after running either `FIRSTRUN` or `npm i` with this folder as the current directory
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.3.25.
