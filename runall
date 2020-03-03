@@ -1,0 +1,21 @@
+#!/bin/sh
+
+# make sure the database is running
+mongod
+
+
+# make sure the server is running
+cd `dirname $0`
+mvnw spring-boot:run
+cd -
+
+
+# make sure the client is running
+cd `dirname $0`/client
+[ ! -f node_modules/.bin/ng ] && npm install --prefer-offline
+node_modules/.bin/ng serve
+cd -
+
+
+# open the web page
+xdg-open http://localhost:4200/
