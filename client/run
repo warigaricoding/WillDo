@@ -1,5 +1,5 @@
 #!/bin/sh
-cd `dirname $0`/client
-[ ! -f node_modules/.bin/ng ] && npm install --prefer-offline
-node_modules/.bin/ng serve
-cd -
+cd `dirname $0`
+[ ! -f node_modules/.bin/ng ] && npm install
+./node_modules/.bin/ng serve
+#cd -
