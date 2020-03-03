@@ -1,3 +1,4 @@
+/** @jsx React.DOM */
 var path = require('path');
 
 module.exports = {
@@ -24,6 +25,44 @@ module.exports = {
         ]
     }
 };
+const React = require('react');
+const ReactDOM = require('react-dom');
+const client = require('./client');
 
+class App extends React.Component{
+    constructor(props) {
+        super(props);
+        this.state = {task: []};
+    }
+    componentDidMount() {
+        client({method: 'GET', path: '/tasks'}).done(response =>{
+           this.setState({task: response.entity._embedded.task})
+        });
+    }
+    render() {
+        return (
+            <TaskList task = {this.state.task}/>
+        )
+    }
+}
+class TaskList extends React.Component{
+    render() {
+        const task = this.props.task.map(task =>
+            <Task key ={task._links.self.href} task={task}/>
+        );
+        return (
+            <table>
+                <tbody>
+                    <tr>
+                        <th>Summary</th>
+                        <th>Description</th>
+                        <th>Date</th>
+                    </tr>
+                    {task}
+                </tbody>
+            </table>
+        )
+    }
+}
 
 
