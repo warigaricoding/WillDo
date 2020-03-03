@@ -12,11 +12,20 @@ export class Task {
 	owner: number;
 	status: number;
 	header: string;
-	dueDate: Date;
+	dueDate: string;
 	description: string;
 	assignedUsers: number[];
 	priority: number;
-	constructor(){}
+
+	constructor(id?, owner?, status?, header?, dueDate?, description?) // '?' denotes an optional argument
+	{
+		this.id= id;
+		this.owner= owner | 0;
+		this.status= +this.status || 0;
+		this.header= String( header || "" );
+		this.dueDate= new Date ( dueDate || 0 ).toISOString();
+		this.description= String( description || "" );
+	}
 
 	isCompleted(): boolean {
 		return this.status >= 1;
@@ -49,13 +58,7 @@ export class Task {
 
 		static fromJsonObject(obj: _ITask): Task
 		{
-			return {
-				id: obj.id,
-				header: obj.summary,
-				dueDate: new Date(obj.date),
-				description: obj.description,
-				status: +obj.state
-			} as Task;
+			return new Task ( obj.id, 0, obj.state, obj.summary, obj.date, obj.description );
 		}
 
 		toJsonObject(): _ITask
@@ -63,7 +66,7 @@ export class Task {
 			return {
 						id: this.id,
 						summary: this.header,
-						date: String(this.dueDate),
+						date: new Date( this.dueDate || 0 ).toISOString(),
 						description: this.description,
 						state: !!this.status
 					} as _ITask;
@@ -122,8 +125,8 @@ export class TaskService {
 
 	update(task: Task, entityId?: number): Observable<Task>
 	{
-		// return this.http.put<Task>(`${this.baseURL}/${Base64.fromInteger(entityId)}`, task, this.httpOptions);
-		return this.http.put<_ITask>(`${this.baseURL}`, task.toJsonObject(), this.httpOptions).pipe( map(Task.fromJsonObject) );
+		// return this.http.put<Task>(`${this.baseURL}/${Base64.fromInteger(entityId)}/`, task, this.httpOptions);
+		return this.http.put<_ITask>(`${this.baseURL}/${task.id}`, task.toJsonObject(), this.httpOptions).pipe( map(Task.fromJsonObject) );
 	}
 
 	remove(task: Task | string): Observable<Task>

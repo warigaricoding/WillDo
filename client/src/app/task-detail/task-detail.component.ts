@@ -39,7 +39,7 @@ export class TaskDetailComponent implements OnInit {
 							.subscribe( task => this.onAdd(task) );
 		else if ( this.state == State.Ready )
 			this.taskService.update(this.task)
-							.subscribe( task => this.task= task );
+							.subscribe( task => { task.status= this.task.status; this.task= task; } );
 		else this.state= State.Changed;
 	}
 
@@ -50,6 +50,7 @@ export class TaskDetailComponent implements OnInit {
 			this.task.id= task.id,
 			this.onChange();
 		else this.state= State.Ready,
+			 task.status= this.task.status, // temporary
 			 this.task= task;
 	}
 
@@ -64,6 +65,7 @@ export class TaskDetailComponent implements OnInit {
 			_this.task.revert(); 
 		else _this.task.start();
 		_this.onChange();
+		_this.state= State.Changed; // make sure the server doesn't override temporary status
 	}
 
 }

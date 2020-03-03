@@ -15,7 +15,7 @@ export class TaskListComponent implements OnInit {
 	constructor(private taskService: TaskService) { }
 
 	ngOnInit() {
-		interval(500).subscribe( () => this.update() ); // for debugging, we auto-refresh the task list every 0.5 seconds
+		interval(500).subscribe( () => this.update() ); // we auto-refresh the task list every 0.5 seconds //// temporary method for easily refreshing tasks
 		// observables are just a way of listening to events
 			// {observable}.subscribe tells the observable to call the function when something happens
 			// it's like a newspaper letting us know 'Extra! Extra!', after which we call `this.update`
