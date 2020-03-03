@@ -5,10 +5,9 @@ which centers around the ['app-root' component](src/app/app.component.html)
 the ['task-list' component](src/app/task-list/task-list.component.ts) is an example of a component we may re-use for difference scenarios i.e. multiple groups
 Note: Angular routing (i.e. selecting different tasks etc. via URLS) has not yet been implemented
 
-[Node.js](https://nodejs.org/en/download/) is needed to build the client;  
-other prequisites are portably installed into this folder after running either `FIRSTRUN` or `npm i` with this folder as the current directory
+[Node.js](https://nodejs.org/en/download/) is needed to build the client   
+use ['run'](run) instead of `ng serve` to start the client without needing `npm i` for the first build
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.3.25.
 
 ## Development server
 
