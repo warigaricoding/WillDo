@@ -10,8 +10,8 @@ use ['run'](run) instead of `ng serve` to start the client without needing `npm 
 
 Development Updates:
 	- Added Node.js installation to maven's configuration settings
-	- In dev mode, a proxy causes the client & server to share the same origin url, while still allowing for angular live reload)
-	- Data returned by the server is now auto-mapped to include object-oriented functionality to allow the reuse of common behaviors)
+	- In dev mode, a proxy causes the client & server to share the same origin url, while still allowing for angular live reload
+	- Data returned by the server is now auto-mapped to include object-oriented functionality to allow the reuse of common behaviors
 	- when maven runs in production mode--i.e. by running `mvnw spring-boot:run -Pprod`--the client is built and deployed to the backend server
 		(http://localhost:8080/ returns the angular app, while the api is at http://localhost:8080/api/)
 
