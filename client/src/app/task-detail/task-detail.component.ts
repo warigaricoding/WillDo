@@ -1,71 +1,54 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { IonCheckbox } from '@ionic/angular';
-import { Task, TaskService } from '../core/tasks.service';
+import { ActivatedRoute } from '@angular/router';
 
-// this is the state of the taskDetail component
-enum State {
-	New,
-	Pending,
-	Changed,
-	Ready		
-}
+import { TaskService } from '../core/tasks.service';
+import { Task } from '../core/task';
 
 @Component({
 	selector: 'task-detail',
 	templateUrl: './task-detail.component.html',
 	styleUrls: ['./task-detail.component.scss']
 })
-export class TaskDetailComponent implements OnInit {
-
-	private state: State;
+export class TaskDetailComponent implements OnInit
+{
 	task: Task;
 
  	constructor(
-		protected taskService: TaskService
+		protected taskService: TaskService,
+		private activatedRoute: ActivatedRoute
 	) { }
 
-	ngOnInit() {
-		if ( ! this.task )
-			this.task= new Task(),
-			this.state= State.New;
-		else this.state= State.Ready;
+	// component is ready!
+	ngOnInit()
+	{
+		var taskId= this.activatedRoute.snapshot.paramMap.get('id');
+
+		// create a new task if one has not been given
+		if ( ! taskId )
+			this.task= new Task();
+		else {
+			this.task= new Task(taskId);
+			this.taskService.get(taskId)
+							.subscribe(
+								task => {
+									this.task= task;
+								}
+							);
+		}
 	}
 
+	// handles user input
 	onChange()
 	{
-		console.log(this.task);
-		if ( this.state == State.New )
-			this.taskService.add(this.task)
-							.subscribe( task => this.onAdd(task) );
-		else if ( this.state == State.Ready )
-			this.taskService.update(this.task)
-							.subscribe( task => { task.status= this.task.status; this.task= task; } );
-		else this.state= State.Changed;
+		console.log(this.task); // for debugging
+		this.task.onChange(this.taskService);
 	}
 
-	onAdd(task: Task)
+	// handles changes to the checkbox
+	onCheck()
 	{
-		if ( this.state == State.Changed )
-			this.state= State.Ready,
-			this.task.id= task.id,
-			this.onChange();
-		else this.state= State.Ready,
-			 task.status= this.task.status, // temporary
-			 this.task= task;
-	}
-
-	onCheck() {
-		setTimeout(TaskDetailComponent.onCheckAsync, 0, this);
-	}
-
-	static onCheckAsync(_this: TaskDetailComponent) {
-		if ( _this.task.isInProgress() )
-			_this.task.complete();
-		else if ( _this.task.isCompleted() )
-			_this.task.revert(); 
-		else _this.task.start();
-		_this.onChange();
-		_this.state= State.Changed; // make sure the server doesn't override temporary status
+		this.task.onCheck(this.taskService);
 	}
 
 }

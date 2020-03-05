@@ -6,8 +6,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin(origins= { "http://localhost:4200", "http://localhost:8100" } ) // allow our client to make requests
 @RestController
+@RequestMapping("/api")
 public class TaskController {
 
     @Autowired

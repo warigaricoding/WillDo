@@ -18,7 +18,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/will-do",
+            "outputPath": "../src/main/resources/static",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -81,7 +81,7 @@
               "sourceMap": false,
               "extractCss": true,
               "namedChunks": false,
-              "aot": true,
+			  "aot": true,
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
@@ -103,7 +103,8 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "app:build"
+			"browserTarget": "app:build",
+			"proxyConfig": "src/environments/proxy.config.json"
           },
           "configurations": {
             "production": {
@@ -185,5 +186,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "packageManager": "npm"
   }
 }

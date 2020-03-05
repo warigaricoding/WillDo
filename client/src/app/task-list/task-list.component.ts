@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { interval } from 'rxjs';
 
-import { Task, TaskService } from '../core/tasks.service'; // this service handles all the task-related server communications for us
+import { TaskService } from '../core/tasks.service'; // this service handles all the task-related server communications for us
+import { Task } from '../core/task';
 
 @Component({
 	selector: 'task-list',
@@ -30,6 +31,16 @@ export class TaskListComponent implements OnInit {
 		this.taskService.getAll()
 						.subscribe( tasks => this.tasks= tasks );
 						// replace the old task list with the new the new task list from the server (after we receive it)
+	}
+
+	trackById(index: number, item: Task): string
+	{
+		return item.id;
+	}
+
+	// handles changes to the checkbox
+	onCheck(task: Task) {
+		task.onCheck(this.taskService);
 	}
 
 }
