@@ -5,9 +5,9 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { AppComponent } from './app.component';
 import { IonicModule } from '@ionic/angular';
-import { TaskDetailComponent } from './task-detail/task-detail.component';
 import { HttpClientModule } from '@angular/common/http';
-import { TaskListComponent } from './task-list/task-list.component';
+import { TaskDetailComponent } from './tasks/task-detail.component';
+import { TaskListComponent } from './tasks/task-list.component';
 
 const appRoutes: Routes
 	=

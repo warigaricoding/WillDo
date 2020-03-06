@@ -1,13 +1,35 @@
 import { Component, OnInit } from '@angular/core';
 import { interval } from 'rxjs';
 
-import { TaskService } from '../core/tasks.service'; // this service handles all the task-related server communications for us
-import { Task } from '../core/task';
+import { TaskService } from './tasks.service'; // this service handles all the task-related server communications for us
+import { Task } from './task-class';
 
 @Component({
 	selector: 'task-list',
-	templateUrl: './task-list.component.html',
-	styleUrls: ['./task-list.component.scss']
+	template: `
+		<ion-grid fixed>
+			<ion-row>
+				<ion-col size="10">
+					<ion-item button routerLink="/tasks">
+						<ion-label>
+							Create a new task.
+						</ion-label>
+					</ion-item>
+				</ion-col>
+				<ion-col *ngFor="let task of tasks; trackBy: trackById" size="10"><!-- trackBy prevents repaints -->
+					<ion-card style="margin:10px">
+						<!--ion-item-->
+							<ion-checkbox style="padding:15px;height:60px;width:60px;" [indeterminate]="task.isInProgress()" [checked]="task.isCompleted()" (click)="onCheck(task)"></ion-checkbox>
+							<ion-item button style="display:inline-block;width:80%" [routerLink]="[ '/tasks', task.id ]">
+								{{ task.header }}
+							</ion-item>
+						<!--/ion-item-->
+					</ion-card>
+				</ion-col>
+			</ion-row>
+		</ion-grid>
+	`,
+	styles: [ ]
 })
 export class TaskListComponent implements OnInit {
 

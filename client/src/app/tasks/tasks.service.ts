@@ -4,10 +4,10 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs'; // asynchronous event-based library
 import { catchError, map, tap } from 'rxjs/operators';
 
-import { Task } from './task';
-import { ApiService } from './api.service';
-import { AuthService } from './auth.service';
-import { ApiHelper } from  './api.helper';
+import { Task } from './task-class';
+import { ApiService } from '../core/api.service';
+import { AuthService } from '../core/auth.service';
+import { ApiHelper } from  '../core/api.helper';
 
 @Injectable({
 	providedIn: 'root'

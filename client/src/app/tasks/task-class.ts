@@ -1,4 +1,4 @@
-import { ApiIgnore, ApiProperty } from  './api.helper';
+import { ApiIgnore, ApiProperty } from  '../core/api.helper';
 import { TaskService } from './tasks.service';
 
 export class Task
