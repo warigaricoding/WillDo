@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { TaskService } from './tasks.service';
@@ -80,12 +80,13 @@ export class TaskDetailComponent implements OnInit
  	constructor(
 		protected taskService: TaskService,
 		private activatedRoute: ActivatedRoute
-	) { }
+	) {}
 
 	// component is ready!
 	ngOnInit()
 	{
-		var taskId= this.activatedRoute.snapshot.paramMap.get('id');
+		// get the task's id from the current url
+		var taskId= this.activatedRoute.snapshot.paramMap.get('id') || this.activatedRoute.firstChild.snapshot.paramMap.get('id');
 
 		// create a new task if one has not been given
 		if ( ! taskId )

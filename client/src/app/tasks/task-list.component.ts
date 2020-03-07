@@ -12,7 +12,7 @@ import { Task } from './task-class';
 				<ion-col size="10">
 					<ion-item button routerLink="/tasks">
 						<ion-label>
-							Create a new task.
+							Click here to create a new task.
 						</ion-label>
 					</ion-item>
 				</ion-col>

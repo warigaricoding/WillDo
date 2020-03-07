@@ -3,3 +3,7 @@
 * {
 	vertical-align: middle; // try to align everything naturally by default
 }
+
+.popover-content {
+	width: 80vw !important; /* 80% of the screen's width */
+}
