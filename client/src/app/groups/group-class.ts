@@ -7,7 +7,6 @@ export class Group
 	/** the id returned by the server */
 	id: string;
 	
-	/** the group or entity this task was created for (id) */
 	@ApiProperty("name")
 	displayName: string;
 

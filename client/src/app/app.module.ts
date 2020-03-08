@@ -9,6 +9,8 @@ import { IonicModule } from '@ionic/angular';
 import { AppComponent, DynamicView } from './app.component';
 import { TaskDetailComponent } from './tasks/task-detail.component';
 import { TaskListComponent } from './tasks/task-list.component';
+import { GroupListComponent } from './groups/group-list.component';
+import { GroupDetailComponent } from './groups/group-detail.component';
 
 const appRoutes: Routes
 	=
@@ -20,6 +22,14 @@ const appRoutes: Routes
 		{
 			path: 'tasks/:id',
 			component: DynamicView.get(TaskDetailComponent)
+		},
+		{
+			path: 'groups',
+			component: DynamicView.get(GroupDetailComponent) // wraps the component in a screen-dependent context (currently uses popovers only)
+		},
+		{
+			path: 'groups/:id',
+			component: DynamicView.get(GroupDetailComponent)
 		}
 	];
 
@@ -27,7 +37,8 @@ const appRoutes: Routes
 @NgModule({
   declarations: [
     AppComponent,
-	TaskListComponent
+	TaskListComponent,
+	GroupListComponent
   ].concat(
 	DynamicView.getUserComponents(), // array of all components put in a dynamic context
 	DynamicView.getGeneratedComponents() // array of all dynamically created components

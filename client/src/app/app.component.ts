@@ -3,33 +3,41 @@ import { Component } from '@angular/core';
 @Component({
 	selector: 'app-root',
 	template: `
-		<ion-content>
-			<!-- Note: ion-content creates the main, scrollable view of the application -->
+		<ion-split-pane when="md" contentId="mainView">
+			<ion-menu contentId="mainView">
+				<group-list>
+				</group-list>
+			</ion-menu>
+			<ion-content id="mainView">
+				<!-- Note: ion-content creates the main, scrollable view of the application -->
 
-			<router-outlet>
-				<!-- router outlet switches between tasks -->
+				<router-outlet>
+					<!-- router outlet switches between tasks -->
 
-				<!--ion-popover-->
+					<!--ion-popover-->
 
-					<!--task-detail-->
-						<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * -->
-						<!-- 'task-detail' displays the details of a single task -->
-						<!--   (  see  'app/tasks/task-detail.component.ts'  )   -->
-						<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * -->
-					<!--/task-detail-->
+						<!--task-detail-->
+							<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * -->
+							<!-- 'task-detail' displays the details of a single task -->
+							<!--   (  see  'app/tasks/task-detail.component.ts'  )   -->
+							<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * -->
+						<!--/task-detail-->
 
-				<!--/ion-popover-->
+					<!--/ion-popover-->
 
-			</router-outlet>
+				</router-outlet>
+					
 
-			<task-list>
-				<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
-				<!-- 'task-list' is list of tasks in any kind of context i.e. different groups -->
-				<!--               (  see  'app/tasks/task-list.component.ts'  )               -->
-				<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
-			</task-list>
+				<task-list>
+					<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
+					<!-- 'task-list' is list of tasks in any kind of context i.e. different groups -->
+					<!--               (  see  'app/tasks/task-list.component.ts'  )               -->
+					<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
+				</task-list>
+				
 
-		</ion-content>
+			</ion-content>
+		</ion-split-pane>
 	`,
 	styles: []
 })
