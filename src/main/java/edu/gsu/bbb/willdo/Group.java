@@ -7,9 +7,10 @@ import java.util.List;
 public class Group {
     @Id
     private String id;
-    //private User admin;
+    //private User admin;  Will be implemented with the addition of users
     private String name;
     private List<String> taskId;
+    //private List<Users> groupList; Needs user implementation
 
     public Group(String id, String name, List<String> taskId) {
         this.id = id;
