@@ -1,4 +1,4 @@
-import { ApiIgnore, ApiProperty } from  '../core/api.helper';
+import { ApiIgnore, ApiProperty } from '../core/api.helper';
 import { TaskService } from './tasks.service';
 
 export class Task
@@ -50,8 +50,7 @@ export class Task
 		return this.status > 0 && this.status < 1;
 	}
 
-	getStatusString()
-	{
+	getStatusString() {
 		if ( this.status >= 1 )
 			return "Completed";
 		else if ( this.status > 0 )
@@ -59,18 +58,15 @@ export class Task
 		else return "Not Started";
 	}
 
-	revert()
-	{
+	revert() {
 		this.status= 0;
 	}
 
-	start()
-	{
+	start() {
 		this.status= 0.5;
 	}
 
-	complete()
-	{
+	complete() {
 		this.status= 1;
 	}
 
@@ -91,7 +87,7 @@ export class Task
 
 		if ( this.ready ) // update the task
 		{
-			var version= ++this.version;
+			const version= ++this.version;
 			taskService.update(this)
 			           .subscribe( task => this.onUpdate(task, version) );
 		}

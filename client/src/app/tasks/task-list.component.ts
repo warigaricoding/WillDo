@@ -17,19 +17,22 @@ import { Task } from './task-class';
 					</ion-item>
 				</ion-col>
 				<ion-col *ngFor="let task of tasks; trackBy: trackById" size="10"><!-- trackBy prevents repaints -->
-					<ion-card style="margin:10px">
-						<!--ion-item-->
-							<ion-checkbox style="padding:15px;height:60px;width:60px;" [indeterminate]="task.isInProgress()" [checked]="task.isCompleted()" (click)="onCheck(task)"></ion-checkbox>
-							<ion-item button style="display:inline-block;width:80%" [routerLink]="[ '/tasks', task.id ]">
-								{{ task.header }}
-							</ion-item>
-						<!--/ion-item-->
-					</ion-card>
+					<ion-checkbox [indeterminate]="task.isInProgress()" [checked]="task.isCompleted()" (click)="onCheck(task)">
+					</ion-checkbox>
+					<ion-item button style="display:inline-block;width:80%" [routerLink]="[ '/tasks', task.id ]">
+						{{ task.header }}
+					</ion-item>
 				</ion-col>
 			</ion-row>
 		</ion-grid>
 	`,
-	styles: [ ]
+	styles: [ `
+		ion-checkbox {
+			width: 55px;
+			height: 55px;
+			padding: 15px;
+		}
+	` ]
 })
 export class TaskListComponent implements OnInit {
 
@@ -47,22 +50,22 @@ export class TaskListComponent implements OnInit {
 				// Left side of the arrow is input; Right side is body & ouput
 	}
 
-	update()
-	{
+	update() {
 		// ask the TaskService to update the list of tasks
 		this.taskService.getAll()
 						.subscribe( tasks => this.tasks= tasks );
 						// replace the old task list with the new the new task list from the server (after we receive it)
 	}
 
+	/** handles changes to the checkbox */
+	onCheck(task: Task) {
+		task.onCheck(this.taskService);
+	}
+
+	/** returns what makes each item unique to prevent UI repainting when new data is received */
 	trackById(index: number, item: Task): string
 	{
 		return item.id;
-	}
-
-	// handles changes to the checkbox
-	onCheck(task: Task) {
-		task.onCheck(this.taskService);
 	}
 
 }

@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { TaskService } from './tasks.service';
 import { Task } from './task-class';
+import { IonTextarea } from '@ionic/angular';
 
 @Component({
 	selector: 'task-detail',
@@ -16,62 +17,46 @@ import { Task } from './task-class';
 			</ion-card-header>
 
 			<ion-card-content>
-				<ion-grid class="ion-align-items-center" fixed>
 
-					<ion-row>
-						<ion-col class="ion-text-right ion-align-self-center">
-							<ion-label>Progress:</ion-label>
-						</ion-col>
-						<ion-col>
-							<ion-item>
-								<ion-checkbox [indeterminate]="task.isInProgress()" [checked]="task.isCompleted()" (click)="onCheck()"></ion-checkbox>
-								<ion-label>{{task.getStatusString()}}</ion-label>
-							</ion-item>
-						</ion-col>
-					</ion-row>
+				<ion-item>
+					<ion-label position="fixed">Progress:</ion-label>
+					<ion-checkbox [indeterminate]="task.isInProgress()" [checked]="task.isCompleted()" (click)="onCheck()"></ion-checkbox>
+					<ion-label>&nbsp;&nbsp;{{task.getStatusString()}}</ion-label>
+				</ion-item>
 
-					<ion-row>
-						<ion-col class="ion-text-right ion-align-self-center">
-							<ion-label>Due-Date:</ion-label>
-						</ion-col>
-						<ion-col>
-							<ion-datetime [(ngModel)]="task.dueDate" displayFormat="MMMM D, h a" min="2010" max="2030" (ionChange)="onChange()"></ion-datetime>
-						</ion-col>
-					</ion-row>
+				<ion-item>
+					<ion-label position="fixed">Due-Date:</ion-label>
+					<ion-datetime [(ngModel)]="task.dueDate" displayFormat="MMMM D, h a YYYY" min="2010" max="2030" (ionChange)="onChange()"></ion-datetime>
+				</ion-item>
 
-					<ion-row>
-						<ion-col class="ion-text-right">
-							<ion-label>Description:</ion-label>
-						</ion-col>
-						<ion-col>
-							<ion-textarea [(ngModel)]="task.description" (ionChange)="onChange()"></ion-textarea>
-						</ion-col>
-					</ion-row>
+				<ion-item>
+					<ion-label>Description:</ion-label>
+					<ion-textarea [(ngModel)]="task.description" (ionChange)="onChange()" auto-grow="true" rows="1"></ion-textarea>
+				</ion-item>
 
-					<ion-row>
-						<ion-col class="ion-text-right ion-align-self-center">
-							<ion-label>Assigned Users:</ion-label>
-						</ion-col>
-						<ion-col>
-							<ion-item>
-								<ion-chip>
-									<ion-img>
-		
-									</ion-img>
-									<ion-input>
-		
-									</ion-input>
-									<ion-icon name="close-circle"></ion-icon>
-								</ion-chip>
-							</ion-item>
-						</ion-col>
-					</ion-row>
+				<ion-item>
+					<ion-label>Assigned To:</ion-label>
+					<ion-chip>
+						<ion-img>
+
+						</ion-img>
+						<ion-input>
+
+						</ion-input>
+						<ion-icon name="close-circle"></ion-icon>
+					</ion-chip>
+				</ion-item>
 					
-				</ion-grid>
 			</ion-card-content>
 		</ion-card>	
 	`,
-	styles: [ ]
+	styles: [`
+		ion-card {
+			margin: 0;
+			width: 100%;
+			height: 100%;
+		}
+	`]
 })
 export class TaskDetailComponent implements OnInit
 {
@@ -103,15 +88,13 @@ export class TaskDetailComponent implements OnInit
 	}
 
 	// handles user input
-	onChange()
-	{
+	onChange() {
 		console.log(this.task); // for debugging
 		this.task.onChange(this.taskService);
 	}
 
 	// handles changes to the checkbox
-	onCheck()
-	{
+	onCheck() {
 		this.task.onCheck(this.taskService);
 	}
 

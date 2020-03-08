@@ -27,10 +27,11 @@ const appRoutes: Routes
 @NgModule({
   declarations: [
     AppComponent,
-	TaskListComponent,
-	...DynamicView.map.keys(), // list of all components put in a dynamic context
-	...DynamicView.map.values() // list of all dynamically created components
-  ],
+	TaskListComponent
+  ].concat(
+	DynamicView.getUserComponents(), // array of all components put in a dynamic context
+	DynamicView.getGeneratedComponents() // array of all dynamically created components
+  ),
   imports: [
     BrowserModule,
 	FormsModule,
@@ -46,6 +47,6 @@ const appRoutes: Routes
   exports: [RouterModule],
   providers: [],
   bootstrap: [AppComponent],
-  entryComponents: [ ...DynamicView.map.keys() ] // list of all components put a dynamic context
+  entryComponents: DynamicView.getUserComponents() // array of all components put a dynamic context
 })
 export class AppModule { }

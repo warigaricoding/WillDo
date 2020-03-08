@@ -1,13 +1,13 @@
 
 // provides support for api property decorators
 
-//** represents a property that shouldn't be sent to the server nor received */
+/** represents a property that shouldn't be sent to the server nor received */
 export function ApiIgnore( target: object, propertyKey: string | symbol ): void
 {
 	apiHelper.getMetadata(target.constructor)[ propertyKey ]= null;	
 }
 
-//** represents a property that has differences with that of the server */
+/** represents a property that has differences with that of the server */
 export function ApiProperty(apiName: string, apiType?: string)
 {
 	return function ( target: object, propertyKey: string | symbol )
@@ -24,7 +24,7 @@ export class ApiHelper<T>
 {
 	private init: boolean;
 	private properties: _.Mapping[];
-	private transformations: _.Transformation[];
+	private transformations: _.Transformation<T>[];
 
 	constructor(private constructor: new () => T)
 	{
@@ -36,14 +36,14 @@ export class ApiHelper<T>
 		if ( ! this.init && ! this.initialize() )
 			return obj;
 
-		var apiObj= {};
+		const apiObj= {};
 			
 		if ( this.properties )
-			for ( let prop of  this.properties )
+			for ( const prop of  this.properties )
 				apiObj[ prop.apiName ]= obj[ prop.name ];
 
 		if ( this.transformations )
-			for ( let transformation of this.transformations )
+			for ( const transformation of this.transformations )
 				apiObj[ transformation.apiName ]= transformation.toApiProperty(obj[ transformation.name ]);
 
 		// delete apiObj["id"];
@@ -60,14 +60,14 @@ export class ApiHelper<T>
 		else if ( ! apiObj )
 			return apiObj;
 
-		let obj: T = new this.constructor();
+		const obj: T = new this.constructor();
 			
 		if ( this.properties )
-			for ( let prop of this.properties )
+			for ( const prop of this.properties )
 					obj[ prop.name ]= apiObj[ prop.apiName ];
 
 		if ( this.transformations )
-			for ( let transformation of this.transformations )
+			for ( const transformation of this.transformations )
 					obj[ transformation.name ]=  transformation.fromApiProperty(apiObj[ transformation.apiName ]);
 
 		return obj;
@@ -75,16 +75,16 @@ export class ApiHelper<T>
 
 	private initialize(): boolean
 	{
-		var classMetadata;
+		let classMetadata;
 		if ( ! this.constructor || !( classMetadata=  this.constructor[ApiPropertiesKey] ) )
 			return false;
 		this.properties= [];
 		this.transformations= [];
 		
-		var prototype= new this.constructor(); // the class should instantiate all its primitive types
+		const prototype= new this.constructor(); // the class should instantiate all its primitive types
 		for ( const prop in prototype )
 		{
-			var propMetadata= classMetadata[ prop ] as [ string, string ];
+			const propMetadata= classMetadata[ prop ] as [ string, string ];
 
 			if ( propMetadata !== null )
 				if ( propMetadata && propMetadata[1] )
@@ -98,6 +98,7 @@ export class ApiHelper<T>
 	}
 }
 
+// tslint:disable-next-line: no-namespace
 namespace apiHelper
 {
 
@@ -105,7 +106,7 @@ namespace apiHelper
 	{
 		name: string | symbol;
 		apiName: string;
-		fromApiProperty: (any) => any;
+		fromApiProperty: ( apiVal: any ) => any;
 		constructor(name: string, apiName: string, fromType: string)
 		{
 			this.name= name;
@@ -114,9 +115,9 @@ namespace apiHelper
 	    }
 	}
 
-	export class Transformation extends Mapping
+	export class Transformation<T> extends Mapping
 	{
-		toApiProperty: (any) => any;
+		toApiProperty: ( val: T ) => any;
 		constructor(name: string, apiName: string, apiType: string, fromType: string)
 		{
 			apiType= apiType.substring(0, 1).toUpperCase() + apiType.substring(1).toLowerCase();
@@ -132,7 +133,7 @@ namespace apiHelper
 		if ( ! constructor )
 			constructor= this.constructor= {};
 
-		var propMetadata= constructor[ ApiPropertiesKey ];
+		let propMetadata= constructor[ ApiPropertiesKey ];
 		if ( ! propMetadata )
 			propMetadata= constructor[ ApiPropertiesKey ]= {};
 

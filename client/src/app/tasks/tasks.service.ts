@@ -25,7 +25,8 @@ export class TaskService extends ApiService<Task>
 
 	getAll(entityId?: string): Observable<Task[]>
 	{
-		return super.getAll(entityId).pipe(	catchError( e => of<Task[]>( [ { header: e.message } as Task ] ) )	); // return the error message as a fake task 
+		return super.getAll(entityId).pipe(	catchError( e => of<Task[]>( [ new Task(0, 0, 0, e.message) ] ) ) );
+														// returns the error message as a fake task 
 	}
 
 	remove(task: Task | string): Observable<Task>
