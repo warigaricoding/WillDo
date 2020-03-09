@@ -1,9 +1,8 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { TaskService } from './tasks.service';
 import { Task } from './task-class';
-import { IonTextarea } from '@ionic/angular';
 
 @Component({
 	selector: 'task-detail',
@@ -26,7 +25,8 @@ import { IonTextarea } from '@ionic/angular';
 
 				<ion-item>
 					<ion-label position="fixed">Due-Date:</ion-label>
-					<ion-datetime [(ngModel)]="task.dueDate" displayFormat="MMMM D, h a YYYY" min="2010" max="2030" (ionChange)="onChange()"></ion-datetime>
+					<ion-datetime [(ngModel)]="task.dueDate" displayFormat="h a, MMMM D, YYYY" min="2010" max="2030" (ionChange)="onChange()">
+					</ion-datetime>
 				</ion-item>
 
 				<ion-item>
@@ -48,6 +48,15 @@ import { IonTextarea } from '@ionic/angular';
 				</ion-item>
 					
 			</ion-card-content>
+
+			<div style="position:absolute;bottom:0px">
+				<ion-buttons>
+					<ion-button fill="clear" (click)="onDelete()">
+						<ion-icon name="trash"></ion-icon>
+					</ion-button>
+				</ion-buttons>
+			</div>
+
 		</ion-card>	
 	`,
 	styles: [`
@@ -61,27 +70,32 @@ import { IonTextarea } from '@ionic/angular';
 export class TaskDetailComponent implements OnInit
 {
 	task: Task;
+	init: boolean;
+	@Input()
+	activatedRoute: ActivatedRoute;
 
  	constructor(
-		protected taskService: TaskService,
-		private activatedRoute: ActivatedRoute
+		protected taskService: TaskService
 	) {}
 
 	// component is ready!
 	ngOnInit()
 	{
 		// get the task's id from the current url
-		var taskId= this.activatedRoute.snapshot.paramMap.get('id') || this.activatedRoute.firstChild.snapshot.paramMap.get('id');
+		var taskId= TaskService.getFromRoute(this.activatedRoute, 'taskId'),
+			groupId= TaskService.getFromRoute(this.activatedRoute, 'groupId');
 
 		// create a new task if one has not been given
 		if ( ! taskId )
-			this.task= new Task();
+			this.task= new Task(null, groupId),
+			this.init= true;
 		else {
-			this.task= new Task(taskId);
-			this.taskService.get(taskId)
+			this.task= new Task(taskId, groupId);
+			this.taskService.get(taskId, groupId)
 							.subscribe(
 								task => {
 									this.task= task;
+									setTimeout(()=>{this.init= true;},100);
 								}
 							);
 		}
@@ -89,7 +103,8 @@ export class TaskDetailComponent implements OnInit
 
 	// handles user input
 	onChange() {
-		console.log(this.task); // for debugging
+		if ( ! this.init )
+			return false;
 		this.task.onChange(this.taskService);
 	}
 
@@ -98,4 +113,9 @@ export class TaskDetailComponent implements OnInit
 		this.task.onCheck(this.taskService);
 	}
 
+	onDelete() {
+		if ( window.confirm("Are you sure you want to delete this task?") )
+			this.taskService.remove(this.task).subscribe(),
+			window.history.back();
+	}
 }

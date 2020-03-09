@@ -64,7 +64,7 @@ export class ApiHelper<T>
 			
 		if ( this.properties )
 			for ( const prop of this.properties )
-					obj[ prop.name ]= apiObj[ prop.apiName ];
+					obj[ prop.name ]= prop.fromApiProperty(apiObj[ prop.apiName ]);
 
 		if ( this.transformations )
 			for ( const transformation of this.transformations )

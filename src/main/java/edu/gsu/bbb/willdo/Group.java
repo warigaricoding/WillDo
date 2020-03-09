@@ -11,14 +11,14 @@ public class Group {
     private String id;
     //private User admin;  Will be implemented with the addition of users
     private String name;
-    private List<String> taskId;
-    private List<String> archiveId;
+    //private List<String> taskId;
+    //private List<String> archiveId;
     //private List<Users> groupList; Needs user implementation
 
-    public Group(String id, String name, List<String> taskId) {
+    public Group(String id, String name) {//, List<String> taskId) {
         this.id = id;
         this.name = name;
-        this.taskId = taskId;
+        //this.taskId = taskId;
     }
     public String getId() {
         return id;
@@ -36,18 +36,18 @@ public class Group {
         this.name = name;
     }
 
-    public List<String> getTaskId() {
-        return taskId;
-    }
+    //public List<String> getTaskId() {
+    //    return taskId;
+    //}
 
-    public void setTaskId(List<String> taskId) {
-        this.taskId = taskId;
-    }
+    //public void setTaskId(List<String> taskId) {
+    //    this.taskId = taskId;
+    //}
 
-    public void taskIdInit(){
-        this.taskId = new ArrayList<String>();
-    }
-    public void addTask(String id){
-        this.taskId.add(id);
-    }
+    //public void taskIdInit(){
+    //    this.taskId = new ArrayList<String>();
+    //}
+    //public void addTask(String id){
+    //    this.taskId.add(id);
+    //}
 }

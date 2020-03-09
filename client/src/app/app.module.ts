@@ -16,20 +16,43 @@ const appRoutes: Routes
 	=
 	[
 		{
-			path: 'tasks',
-			component: DynamicView.get(TaskDetailComponent) // wraps the component in a screen-dependent context (currently uses popovers only)
+			path: 'group/:groupId',
+			component: TaskListComponent,
+			children: [
+				{
+					path: 'tasks',
+					component: DynamicView.get(TaskDetailComponent) // wraps the component in a screen-dependent modal
+				},
+				{
+					path: 'tasks/:taskId',
+					component: DynamicView.get(TaskDetailComponent)
+				}
+			]
 		},
 		{
-			path: 'tasks/:id',
-			component: DynamicView.get(TaskDetailComponent)
+			path: '',
+			component: TaskListComponent,
+			children: [
+				{
+					path: 'tasks',
+					component: DynamicView.get(TaskDetailComponent)
+				},
+				{
+					path: 'tasks/:taskId',
+					component: DynamicView.get(TaskDetailComponent)
+				}
+			]
 		},
 		{
-			path: 'groups',
-			component: DynamicView.get(GroupDetailComponent) // wraps the component in a screen-dependent context (currently uses popovers only)
+			path: ':groupId',
+			component: DynamicView.get(GroupDetailComponent),
+			outlet: 'g'
 		},
 		{
-			path: 'groups/:id',
-			component: DynamicView.get(GroupDetailComponent)
+			path: ':',
+			pathMatch: 'full',
+			component: DynamicView.get(GroupDetailComponent),
+			outlet: 'g'
 		}
 	];
 
@@ -51,7 +74,8 @@ const appRoutes: Routes
 	RouterModule.forRoot(appRoutes,
 		{
 			onSameUrlNavigation: 'reload',
-			anchorScrolling: 'enabled'
+			anchorScrolling: 'enabled',
+			paramsInheritanceStrategy: 'always'
 		}
 	)
   ],

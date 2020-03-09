@@ -11,16 +11,18 @@ import org.springframework.web.bind.annotation.*;
 public class TaskController {
 
     @Autowired
-    TaskRepository taskRepository;
+    TaskRepository repository;
 
-    @GetMapping("/tasks") //get all tasks
-    public List<Task> getTasks() {
-        return taskRepository.findAll();
+    @GetMapping({ "/tasks", "/tasks/group/{group}" }) //get all tasks
+    public List<Task> all( @PathVariable(required= false) String group) {
+		if ( group != null )
+			return repository.findAllByGroup(group);
+        else return repository.findAll();
     }
 
-    @GetMapping("/tasks/{id}") //get one specific task
-    public Optional<Task> findTask(@PathVariable String id) {
-        Optional<Task> findTask = taskRepository.findById(id);
+	@GetMapping({ "/tasks/{id}", "/tasks/{id}/group/{group}" }) //get one specific task
+    public Optional<Task> task(@PathVariable String id, @PathVariable(required=false) String group) {
+        Optional<Task> findTask =  group != null ?  repository.findByIdAndGroup(id, group) : repository.findById(id);
         Optional<Task> empty = Optional.empty(); //to see if it leaves loop
 
         if(!findTask.isPresent()) {
@@ -34,19 +36,23 @@ public class TaskController {
     @PostMapping("/tasks") //saves new task as new doc in DB
     public Object newTask(@RequestBody Task newTask) {
         Optional<Task> empty = Optional.empty(); //to see if it leaves loop
-
         if(newTask.getSummary() == null){
             //some response annotation; null values
         } else {
-            return taskRepository.save(newTask);
+            return repository.save(newTask);
         }
         return empty; //should not return this ever
     }
 
     @PutMapping("/tasks/{id}") //updates task already in DB
     public Task updateTask(@RequestBody Task newTask, @PathVariable String id) {
-        if (taskRepository.findById(id).isPresent()) {
-            Optional<Task> oldTaskInfo = taskRepository.findById(id)
+		Optional<Task> oldTaskInfo;
+		String group= newTask.getGroup();
+		if ( group == null || group.isEmpty() )
+			oldTaskInfo= repository.findById(id);
+		else oldTaskInfo= repository.findByIdAndGroup(id, group);
+        if (oldTaskInfo.isPresent()) {
+            oldTaskInfo = oldTaskInfo
                     .map(task -> {
                         if (newTask.getSummary() != null) {
                             task.setSummary(newTask.getSummary());
@@ -58,12 +64,19 @@ public class TaskController {
                             task.setDate(newTask.getDate());
                         }
                         if (newTask.isState() != task.isState()
-                                && newTask.isState()) {
+                                && ( newTask.isState() || true )) {
                             task.setState(newTask.isState());
                         }
-                        return taskRepository.save(task);
+                        return repository.save(task);
                     });
         }
         return newTask; //sends original request body so we can see what broke it
+    }
+
+	@DeleteMapping({ "/tasks/{id}", "/tasks/{id}/group/{group}" }) //delete task
+    public void delete(@PathVariable String id, @PathVariable(required=false) String group) {
+		if ( group != null )
+			repository.deleteByIdAndGroup(id, group);
+		else repository.deleteById(id); 
     }
 }

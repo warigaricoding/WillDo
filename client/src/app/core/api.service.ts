@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs'; // asynchronous event-based library
 import { catchError, map, tap } from 'rxjs/operators';
+import { ActivatedRoute } from '@angular/router';
 
 import { AuthService } from './auth.service';
 import { ApiHelper } from  './api.helper';
@@ -17,6 +18,7 @@ export class ApiService<T>
 {
 
 	protected baseURL= "/api/";
+	protected entityName= "group";
 
 	protected httpOptions= {
 		headers: new HttpHeaders({
@@ -39,7 +41,7 @@ export class ApiService<T>
 	public getAll(entityId?: string): Observable<T[]>
 	{
 		const requestURL=
-				entityId ? `${this.baseURL}/${entityId}`
+				entityId ? `${this.baseURL}/${this.entityName}/${entityId}`
 						 : this.baseURL;
 		return this.http.get(requestURL, this.httpOptions).pipe( map( this.fromApiArray ) )
 	}
@@ -47,7 +49,7 @@ export class ApiService<T>
 	public get(itemId: string, entityId?: string): Observable<T>
 	{
 		const requestURL=
-				entityId ? `${this.baseURL}/${itemId}/${entityId}`
+				entityId ? `${this.baseURL}/${itemId}/${this.entityName}/${entityId}`
 						 : `${this.baseURL}/${itemId}`;
 		return this.http.get(requestURL, this.httpOptions).pipe( map( this.fromApiObject ) );
 	}
@@ -55,7 +57,7 @@ export class ApiService<T>
 	public add(item: T, entityId?: string): Observable<T>
 	{
 		const requestURL=
-				entityId ? `${this.baseURL}/${entityId}`
+				entityId ? `${this.baseURL}/${this.entityName}/${entityId}`
 						 : this.baseURL;
 		return this.http.post(requestURL, this.toApiObject(item), this.httpOptions).pipe( map( this.fromApiObject ) );
 	}
@@ -64,9 +66,17 @@ export class ApiService<T>
 	{
 		const itemId= String( item["id"] || "0" ),
 			requestURL=
-				entityId ? `${this.baseURL}/${itemId}/${entityId}`
+				entityId ? `${this.baseURL}/${itemId}/${this.entityName}/${entityId}`
 						 : `${this.baseURL}/${itemId}`;
 		return this.http.put(requestURL, this.toApiObject(item), this.httpOptions).pipe( map( this.fromApiObject ) );
+	}
+
+	public static getFromRoute(route: ActivatedRoute, param: string) {
+			for ( ; route; route= route.firstChild ) {
+				let paramValue= route.snapshot.paramMap.get(param);
+				if ( paramValue )
+					return paramValue;
+			}
 	}
 
 	protected delete(item: T | string, entityId?: string): Observable<T>
@@ -75,7 +85,7 @@ export class ApiService<T>
 			return null;
 		const itemId=  String ( "id" in ( item as any ) ?  item["id"] : item ),
 			requestURL=
-				entityId ? `${this.baseURL}/${itemId}/${entityId}`
+				entityId ? `${this.baseURL}/${itemId}/${this.entityName}/${entityId}`
 						 : `${this.baseURL}/${itemId}`;
 		
 		return this.http.delete(requestURL, this.httpOptions).pipe( map( this.fromApiObject ) );

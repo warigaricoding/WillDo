@@ -1,5 +1,5 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, OnInit, Input } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { GroupService } from './groups.service';
 import { Group } from './group-class';
@@ -7,45 +7,48 @@ import { Group } from './group-class';
 @Component({
 	selector: 'group-detail',
 	template: `
-		<ion-card>
+		<ion-header>
+			<ion-title class="ion-text-center">
+				<ion-input [(ngModel)]="group.displayName" placeholder="[enter group name]" name="name"></ion-input>
+			</ion-title>
+		</ion-header>
 
-			<ion-card-header>
-				<ion-card-title class="ion-text-center">
-					<ion-input [(ngModel)]="group.displayName" placeholder="[enter group name]"></ion-input>
-				</ion-card-title>
-			</ion-card-header>
+		<ion-content>
 
-			<ion-card-content>
+			<ion-item>
+				<ion-label>Members:</ion-label>
+			</ion-item>
 
-				<!--ion-item>
-					<ion-label>Members:</ion-label>
-				</ion-item-->
-					
-			</ion-card-content>
-		</ion-card>	
-	`,
-	styles: [`
-		ion-card {
-			margin: 0;
-			width: 100%;
-			height: 100%;
-		}
-	`]
+		</ion-content>
+
+		<ion-footer>
+			<ion-toolbar>
+				<ion-buttons slot="end">
+					<ion-button [routerLink]="{ outlets: { g: null } }">Cancel</ion-button>
+					<ion-button type="submit" [disabled]="!group.isValid()" [routerLink]="{ outlets: { g: null } }" (click)="onSubmit()">Submit</ion-button>	
+				</ion-buttons>
+			</ion-toolbar>
+		</ion-footer>
+	`
 })
 export class GroupDetailComponent implements OnInit
 {
 	group: Group;
 
+	@Input()
+	activatedRoute;
+
  	constructor(
 		protected groupService: GroupService,
-		private activatedRoute: ActivatedRoute
+		private router: Router
 	) {}
 
 	// component is ready!
 	ngOnInit()
 	{
 		// get the group's id from the current url
-		var groupId= this.activatedRoute.snapshot.paramMap.get('id') || this.activatedRoute.firstChild.snapshot.paramMap.get('id');
+		
+		var groupId= GroupService.getFromRoute(this.activatedRoute, 'groupId');
 
 		// create a new group if one has not been given
 		if ( ! groupId )
@@ -59,6 +62,16 @@ export class GroupDetailComponent implements OnInit
 								}
 							);
 		}
+	}
+
+	onSubmit() {
+		if ( this.group.isValid() )
+			this.group.push(this.groupService)
+					.subscribe(
+						group => {
+							this.router.navigate([{outlets:{g:[]}}]);
+						}
+					);
 	}
 	
 }

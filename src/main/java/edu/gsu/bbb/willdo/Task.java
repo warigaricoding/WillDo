@@ -1,10 +1,9 @@
 package edu.gsu.bbb.willdo;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 
 public class Task {
-
-
     @Id
     private String id;
 
@@ -13,13 +12,12 @@ public class Task {
     private String date;
     private boolean state;
 
+	@Indexed
+    private String group;
+
     public Task() {}
 
     public String getId() { return id; }
-
-    public void setId(String id) {
-        this.id = id;
-    }
 
     public String getSummary() {
         return summary;
@@ -52,4 +50,8 @@ public class Task {
     public void setState(boolean state) {
         this.state = state;
     }
+
+	public String getGroup() {
+		return this.group;
+	}
 }

@@ -8,7 +8,7 @@ export class Task
 	id: string;
 	
 	/** the group or entity this task was created for (id) */
-	@ApiIgnore
+	@ApiProperty("group")
 	owner: string;
 
 	@ApiProperty("state", "boolean")
@@ -32,14 +32,13 @@ export class Task
 	constructor(id?, owner?, status?, header?, dueDate?, description?) // '?' denotes an optional argument
 	{
 		this.id= id;
-		this.owner= String( owner || "0" );
+		this.owner= String( owner || "" );
 		this.status= +this.status || 0;
 		this.header= String( header || "" );
-		this.dueDate= new Date ( dueDate || 0 ).toISOString();
+		this.dueDate= new Date ( dueDate || Date.now() + 24*3600*1000 ).toISOString();
 		this.description= String( description || "" );
 		
 		this.version= 0;
-		this.ready= !! id;
 	}
 
 	isCompleted(): boolean {
@@ -71,13 +70,9 @@ export class Task
 	}
 
 
-	/** indicates whether or not the task has already been created and added onto the server */
-	@ApiIgnore
-	private version: number;
-
 	/** indicates an identifier for the last change to the task */
 	@ApiIgnore
-	private ready: boolean;
+	private version: number;
 
 
 	// handles user input
@@ -85,15 +80,15 @@ export class Task
 	{
 		console.log(this); // for debugging
 
-		if ( this.ready ) // update the task
+		if ( this.id ) // update the task
 		{
 			const version= ++this.version;
-			taskService.update(this)
+			taskService.update(this/*, this.owner*/)
 			           .subscribe( task => this.onUpdate(task, version) );
 		}
 		else if ( ! this.version ) // task is completely new b/c this.ready is also false
 			this.version= 1, // task is being added to the server
-			taskService.add(this) // send the new task to the server
+			taskService.add(this/*, this.owner*/) // send the new task to the server
 			           .subscribe( task => this.onAdd(task, taskService) );
 		else this.version= 2; // task has changed while being added to the server
 
@@ -103,7 +98,6 @@ export class Task
 	// makes sure pending changes for new tasks are sent after the server finishes creating the taskk
 	onAdd(task: Task, service: TaskService)
 	{
-		this.ready= true;
 		if ( this.version > 1 ) // reward the new task for patiently waiting!
 			this.version= 0,
 			this.id= task.id, // the new id returned by the server
@@ -134,7 +128,6 @@ export class Task
 
 	private static onCheckAsync(task: Task, service: TaskService)
 	{
-
 		if ( task.isInProgress() ) // complete the task if it was previously in-progress
 			task.complete();
 		else if ( task.isCompleted() ) // reset the task's status if it was previously completed
@@ -142,6 +135,13 @@ export class Task
 		else task.start(); // start the task if it has an unknown status
 
 		task.onChange(service); // propogate the changes to the server
+	}
+
+	public static compare(a: Task, b: Task) {
+		let x= a.status - b.status;
+		if ( x != 0 )
+			return x;
+		else return Date.parse(a.dueDate) - Date.parse(b.dueDate);
 	}
 
 }

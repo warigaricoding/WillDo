@@ -1,5 +1,6 @@
 import { ApiIgnore, ApiProperty } from '../core/api.helper';
 import { GroupService } from './groups.service';
+import { Observable } from 'rxjs';
 
 export class Group
 {
@@ -26,6 +27,17 @@ export class Group
 		this.avatar= String( avatar || "" );
 		this.members=  members ?  Array.from(members) : [];
 		this.admins=  admins ?  Array.from(admins) : [];
+	}
+
+	push(groupService: GroupService ): Observable<Group>
+	{
+		if ( this.id ) 
+			return groupService.update(this);
+		else return groupService.add(this);
+	}
+
+	isValid() {
+		return  !! this.displayName;
 	}
 
 }

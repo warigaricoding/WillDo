@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/api")
 public class GroupController {
     @Autowired
     GroupRepository groupRepository;
@@ -41,23 +42,19 @@ public class GroupController {
         return empty;
     }
     @PutMapping("/Groups/{id}")
-    public Object addTask(@RequestBody Task task,@PathVariable String id){
-        Optional<Group> group = groupRepository.findById(id);
+    public Object addTask(@RequestBody Group group,@PathVariable String id){
+        Optional<Group> oldGroup = groupRepository.findById(id);
         Optional<Group> empty = Optional.empty();
 
-        if(!group.isPresent()){
+        if(!oldGroup.isPresent()){
             //Some Error message
         }else{
-            task.setId(ObjectId.get().toString());
-            Group tmp = group.get();
-            if(group.get().getTaskId()==null){
-                tmp.taskIdInit();
-                tmp.addTask(id);
-            }else{
-                tmp.addTask(id);
-                System.out.println(tmp.getTaskId().toString());
-            }
-
+	        if (group.getName() == null) {
+	            //some error message
+	        } else {
+				
+	            return groupRepository.save(group);
+	        }
         }
 
         return empty;
