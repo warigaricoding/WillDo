@@ -15,11 +15,8 @@ public class Group {
     private List<String> archiveId;
     //private List<Users> groupList; Needs user implementation
 
-    public Group(String id, String name, List<String> taskId) {
-        this.id = id;
-        this.name = name;
-        this.taskId = taskId;
-    }
+    public Group() {}
+
     public String getId() {
         return id;
     }
@@ -44,9 +41,18 @@ public class Group {
         this.taskId = taskId;
     }
 
+    public List<String> getArchiveId(){
+        return this.archiveId;
+    }
+
+    public void setArchiveId(List<String> archiveId){
+        this.archiveId = archiveId;
+    }
+
     public void taskIdInit(){
         this.taskId = new ArrayList<String>();
     }
+
     public void addTask(String id){
         this.taskId.add(id);
     }
