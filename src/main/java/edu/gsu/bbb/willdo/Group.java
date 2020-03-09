@@ -10,6 +10,7 @@ public class Group {
     //private User admin;  Will be implemented with the addition of users
     private String name;
     private List<String> taskId;
+    private List<String> archiveId;
     //private List<Users> groupList; Needs user implementation
 
     public Group(String id, String name, List<String> taskId) {

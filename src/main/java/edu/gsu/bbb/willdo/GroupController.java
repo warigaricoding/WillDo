@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-public class GroupController {
+public class GroupController extends TaskController{
     @Autowired
     GroupRepository repository;
 
@@ -37,6 +37,19 @@ public class GroupController {
         } else {
             return repository.save(group);
         }
+        return empty;
+    }
+    @PostMapping("/Groups/{id}")
+    public Object addTask(@RequestBody Task task,@PathVariable String id){
+        Optional<Group> group = repository.findById(id);
+        Optional<Group> empty = Optional.empty();
+
+        if(!group.isPresent()){
+            //Some Error message
+        }else{
+            group.get().getTaskId().add(task.getId());
+        }
+        newTask(task);
         return empty;
     }
 
