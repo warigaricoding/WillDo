@@ -10,16 +10,16 @@ import org.springframework.web.bind.annotation.*;
 public class TaskController {
 
     @Autowired
-    TaskRepository repository;
+    TaskRepository taskRepository;
 
     @GetMapping("/tasks") //get all tasks
-    public List<Task> all() {
-        return repository.findAll();
+    public List<Task> getTasks() {
+        return taskRepository.findAll();
     }
 
     @GetMapping("/tasks/{id}") //get one specific task
-    public Optional<Task> task(@PathVariable String id) {
-        Optional<Task> findTask = repository.findById(id);
+    public Optional<Task> findTask(@PathVariable String id) {
+        Optional<Task> findTask = taskRepository.findById(id);
         Optional<Task> empty = Optional.empty(); //to see if it leaves loop
 
         if(!findTask.isPresent()) {
@@ -37,15 +37,15 @@ public class TaskController {
         if(newTask.getSummary() == null){
             //some response annotation; null values
         } else {
-            return repository.save(newTask);
+            return taskRepository.save(newTask);
         }
         return empty; //should not return this ever
     }
 
     @PutMapping("/tasks/{id}") //updates task already in DB
     public Task updateTask(@RequestBody Task newTask, @PathVariable String id) {
-        if (repository.findById(id).isPresent()) {
-            Optional<Task> oldTaskInfo = repository.findById(id)
+        if (taskRepository.findById(id).isPresent()) {
+            Optional<Task> oldTaskInfo = taskRepository.findById(id)
                     .map(task -> {
                         if (newTask.getSummary() != null) {
                             task.setSummary(newTask.getSummary());
@@ -60,7 +60,7 @@ public class TaskController {
                                 && newTask.isState()) {
                             task.setState(newTask.isState());
                         }
-                        return repository.save(task);
+                        return taskRepository.save(task);
                     });
         }
         return newTask; //sends original request body so we can see what broke it

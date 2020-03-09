@@ -2,6 +2,8 @@ package edu.gsu.bbb.willdo;
 
 import org.springframework.data.annotation.Id;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Group {
@@ -42,5 +44,10 @@ public class Group {
         this.taskId = taskId;
     }
 
-
+    public void taskIdInit(){
+        this.taskId = new ArrayList<String>();
+    }
+    public void addTask(String id){
+        this.taskId.add(id);
+    }
 }

@@ -1,6 +1,6 @@
 package edu.gsu.bbb.willdo;
 
-import org.graalvm.compiler.nodes.calc.IntegerDivRemNode;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -8,18 +8,19 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-public class GroupController extends TaskController{
+public class GroupController {
     @Autowired
-    GroupRepository repository;
-
+    GroupRepository groupRepository;
+    TaskController taskLinker;
 
     @GetMapping("/Groups")
-    public List<Group> getAll(){
-        return repository.findAll();
+    public List<Group> getGroups(){
+        return groupRepository.findAll();
     }
+
     @GetMapping("/Groups/{id}")
     public Optional<Group> findGroup(@PathVariable String id){
-        Optional <Group> find = repository.findById(id);
+        Optional <Group> find = groupRepository.findById(id);
         Optional <Group> empty = Optional.empty();
 
         if(!find.isPresent()){
@@ -35,21 +36,30 @@ public class GroupController extends TaskController{
         if (group.getName() == null) {
             //some error message
         } else {
-            return repository.save(group);
+            return groupRepository.save(group);
         }
         return empty;
     }
-    @PostMapping("/Groups/{id}")
+    @PutMapping("/Groups/{id}")
     public Object addTask(@RequestBody Task task,@PathVariable String id){
-        Optional<Group> group = repository.findById(id);
+        Optional<Group> group = groupRepository.findById(id);
         Optional<Group> empty = Optional.empty();
 
         if(!group.isPresent()){
             //Some Error message
         }else{
-            group.get().getTaskId().add(task.getId());
+            task.setId(ObjectId.get().toString());
+            Group tmp = group.get();
+            if(group.get().getTaskId()==null){
+                tmp.taskIdInit();
+                tmp.addTask(id);
+            }else{
+                tmp.addTask(id);
+                System.out.println(tmp.getTaskId().toString());
+            }
+
         }
-        newTask(task);
+
         return empty;
     }
 
