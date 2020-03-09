@@ -15,11 +15,8 @@ public class Group {
     private List<String> archiveId;
     //private List<Users> groupList; Needs user implementation
 
-    public Group(String id, String name, List<String> taskId) {
-        this.id = id;
-        this.name = name;
-        this.taskId = taskId;
-    }
+    public Group() {}
+
     public String getId() {
         return id;
     }

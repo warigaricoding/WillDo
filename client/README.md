@@ -1,21 +1,19 @@
 # WillDo
 
 See ['src/index.html'](src/index.html) for an overview of the project structure  
-which centers around the ['app-root' component](src/app/app.component.ts)  
-the ['task-list' component](src/app/tasks/task-list.component.ts) is an example of a component we may re-use for difference scenarios i.e. multiple groups  
-Note: Angular routing (i.e. selecting different tasks etc. via URLS) has not yet been implemented  
+which centers around the ['app-root' component](src/app/app.component.html)  
+the ['task-list' component](src/app/task-list/task-list.component.ts) is an example of a component we may re-use for difference scenarios i.e. multiple groups
+Note: Angular routing (i.e. selecting different tasks etc. via URLS) has not yet been implemented
 
 [Node.js](https://nodejs.org/en/download/) is needed to build the client   
-use ['run'](run) instead of `ng serve` to start the client without needing `npm i` for the first build  
+use ['run'](run) instead of `ng serve` to start the client without needing `npm i` for the first build
 
 Development Updates:
-	- Added Node.js installation to maven's configuration settings  
-	- In dev mode, a proxy causes the client & server to share the same origin url, while still allowing for angular live reload  
-	- Data returned by the server is now auto-mapped to include object-oriented functionality to allow the reuse of common behaviors  
-	- when maven runs in production mode--i.e. by running `mvnw spring-boot:run -Pprod`--the client is built and deployed to the backend server  
-		(http://localhost:8080/ returns the angular app, while the api is at http://localhost:8080/api/)  
-	- Simpler project structure where related modules are all stored together in a folder and each component's html and css is inside it's `.ts` file  
-
+	- Added Node.js installation to maven's configuration settings
+	- In dev mode, a proxy causes the client & server to share the same origin url, while still allowing for angular live reload
+	- Data returned by the server is now auto-mapped to include object-oriented functionality to allow the reuse of common behaviors
+	- when maven runs in production mode--i.e. by running `mvnw spring-boot:run -Pprod`--the client is built and deployed to the backend server
+		(http://localhost:8080/ returns the angular app, while the api is at http://localhost:8080/api/)
 
 ## Development server
 

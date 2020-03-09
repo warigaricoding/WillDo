@@ -7,9 +7,9 @@ import { AuthService } from './auth.service';
 import { ApiHelper } from  './api.helper';
 
 /** Serves as the base class for all web services.
- *      Auto-validates the objects and properties going to and from the server.
- *      Makes sure both communicate seamlessly.
- */
+		Auto-validates the objects and properties going to and from the server.
+		Makes sure both communicate seamlessly.
+*/
 @Injectable({
 	providedIn: 'root'
 })
@@ -82,10 +82,10 @@ export class ApiService<T>
 	}
 
 	/** makes sure the class object is in a compatible format with the api interface */
-	private readonly toApiObject: ( obj: T ) => any;
+	private readonly toApiObject: (T) => any;
 
 	/** creates a new class object from the api interface, so the object methods, etc. work properly */
-	private readonly fromApiObject: ( obj: any ) => T;
+	private readonly fromApiObject: (any) => T;
 
 	/** creates a array of class objects, so data from the server can become object-oriented with working methods, etc. */
 	private readonly fromApiArray: ([]) => T[];

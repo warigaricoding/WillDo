@@ -1,38 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { interval } from 'rxjs';
 
-import { TaskService } from './tasks.service'; // this service handles all the task-related server communications for us
-import { Task } from './task-class';
+import { TaskService } from '../core/tasks.service'; // this service handles all the task-related server communications for us
+import { Task } from '../core/task';
 
 @Component({
 	selector: 'task-list',
-	template: `
-		<ion-grid fixed>
-			<ion-row>
-				<ion-col size="10">
-					<ion-item button routerLink="/tasks">
-						<ion-label>
-							Click here to create a new task.
-						</ion-label>
-					</ion-item>
-				</ion-col>
-				<ion-col *ngFor="let task of tasks; trackBy: trackById" size="10"><!-- trackBy prevents repaints -->
-					<ion-checkbox [indeterminate]="task.isInProgress()" [checked]="task.isCompleted()" (click)="onCheck(task)">
-					</ion-checkbox>
-					<ion-item button style="display:inline-block;width:80%" [routerLink]="[ '/tasks', task.id ]">
-						{{ task.header }}
-					</ion-item>
-				</ion-col>
-			</ion-row>
-		</ion-grid>
-	`,
-	styles: [ `
-		ion-checkbox {
-			width: 55px;
-			height: 55px;
-			padding: 15px;
-		}
-	` ]
+	templateUrl: './task-list.component.html',
+	styleUrls: ['./task-list.component.scss']
 })
 export class TaskListComponent implements OnInit {
 
@@ -50,22 +25,22 @@ export class TaskListComponent implements OnInit {
 				// Left side of the arrow is input; Right side is body & ouput
 	}
 
-	update() {
+	update()
+	{
 		// ask the TaskService to update the list of tasks
 		this.taskService.getAll()
 						.subscribe( tasks => this.tasks= tasks );
 						// replace the old task list with the new the new task list from the server (after we receive it)
 	}
 
-	/** handles changes to the checkbox */
-	onCheck(task: Task) {
-		task.onCheck(this.taskService);
-	}
-
-	/** returns what makes each item unique to prevent UI repainting when new data is received */
 	trackById(index: number, item: Task): string
 	{
 		return item.id;
+	}
+
+	// handles changes to the checkbox
+	onCheck(task: Task) {
+		task.onCheck(this.taskService);
 	}
 
 }

@@ -4,10 +4,10 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs'; // asynchronous event-based library
 import { catchError, map, tap } from 'rxjs/operators';
 
-import { Task } from './task-class';
-import { ApiService } from '../core/api.service';
-import { AuthService } from '../core/auth.service';
-import { ApiHelper } from  '../core/api.helper';
+import { Task } from './task';
+import { ApiService } from './api.service';
+import { AuthService } from './auth.service';
+import { ApiHelper } from  './api.helper';
 
 @Injectable({
 	providedIn: 'root'
@@ -25,8 +25,7 @@ export class TaskService extends ApiService<Task>
 
 	getAll(entityId?: string): Observable<Task[]>
 	{
-		return super.getAll(entityId).pipe(	catchError( e => of<Task[]>( [ new Task(0, 0, 0, e.message) ] ) ) );
-														// returns the error message as a fake task 
+		return super.getAll(entityId).pipe(	catchError( e => of<Task[]>( [ { header: e.message } as Task ] ) )	); // return the error message as a fake task 
 	}
 
 	remove(task: Task | string): Observable<Task>
