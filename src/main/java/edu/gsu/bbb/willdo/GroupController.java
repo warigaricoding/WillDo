@@ -11,7 +11,8 @@ import java.util.Optional;
 public class GroupController {
     @Autowired
     GroupRepository groupRepository;
-    TaskController taskLinker;
+    @Autowired
+    TaskRepository taskRepository;
 
     @GetMapping("/Groups")
     public List<Group> getGroups(){
@@ -41,27 +42,29 @@ public class GroupController {
         return empty;
     }
     @PutMapping("/Groups/{id}")
-    public Object addTask(@RequestBody Task task,@PathVariable String id){
-        Optional<Group> group = groupRepository.findById(id);
-        Optional<Group> empty = Optional.empty();
-
-        if(!group.isPresent()){
-            //Some Error message
-        }else{
-            task.setId(ObjectId.get().toString());
-            Group tmp = group.get();
-            if(group.get().getTaskId()==null){
-                tmp.taskIdInit();
-                tmp.addTask(id);
-            }else{
-                tmp.addTask(id);
-                System.out.println(tmp.getTaskId().toString());
-            }
-
+    public Group addTask(@RequestBody Task newTask,@PathVariable String id){
+        newTask.setId(ObjectId.get().toString());
+        Optional<Group> temp = groupRepository.findById(id);
+        if(taskRepository.findById(id).isPresent()){
+            Optional<Group> findGroup = groupRepository.findById(id);
+            Group updated = findGroup.get();
+            findGroup
+                    .map(group ->{
+                        if(updated.getTaskId() == null){
+                            updated.taskIdInit();
+                            updated.addTask(newTask.getId());
+                            group.setTaskId(updated.getTaskId());
+                        }else{
+                            updated.addTask(newTask.getId());
+                            group.setTaskId(updated.getTaskId());
+                        }
+                        return groupRepository.save(group);
+                    });
         }
-
-        return empty;
+        return temp.get();
     }
+
+
 
 }
 
