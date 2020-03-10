@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ParamMap } from '@angular/router';
 
 import { TaskService } from './tasks.service';
 import { Task } from './task-class';
@@ -71,8 +71,9 @@ export class TaskDetailComponent implements OnInit
 {
 	task: Task;
 	init: boolean;
+
 	@Input()
-	activatedRoute: ActivatedRoute;
+	paramMap: ParamMap;
 
  	constructor(
 		protected taskService: TaskService
@@ -82,8 +83,8 @@ export class TaskDetailComponent implements OnInit
 	ngOnInit()
 	{
 		// get the task's id from the current url
-		var taskId= TaskService.getFromRoute(this.activatedRoute, 'taskId'),
-			groupId= TaskService.getFromRoute(this.activatedRoute, 'groupId');
+		var taskId= this.paramMap.get('taskId'),
+			groupId= this.paramMap.get('groupId');
 
 		// create a new task if one has not been given
 		if ( ! taskId )
@@ -95,7 +96,7 @@ export class TaskDetailComponent implements OnInit
 							.subscribe(
 								task => {
 									this.task= task;
-									setTimeout(()=>{this.init= true;},100);
+									setTimeout( () => this.init= true , 100 );
 								}
 							);
 		}

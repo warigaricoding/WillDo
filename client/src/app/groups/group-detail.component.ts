@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router, ParamMap } from '@angular/router';
 
 import { GroupService } from './groups.service';
 import { Group } from './group-class';
@@ -9,7 +9,7 @@ import { Group } from './group-class';
 	template: `
 		<ion-header>
 			<ion-title class="ion-text-center">
-				<ion-input [(ngModel)]="group.displayName" placeholder="[enter group name]" name="name"></ion-input>
+				<ion-input [(ngModel)]="group.displayName" placeholder="[enter group name]"></ion-input>
 			</ion-title>
 		</ion-header>
 
@@ -36,7 +36,7 @@ export class GroupDetailComponent implements OnInit
 	group: Group;
 
 	@Input()
-	activatedRoute;
+	paramMap: ParamMap;
 
  	constructor(
 		protected groupService: GroupService,
@@ -47,8 +47,7 @@ export class GroupDetailComponent implements OnInit
 	ngOnInit()
 	{
 		// get the group's id from the current url
-		
-		var groupId= GroupService.getFromRoute(this.activatedRoute, 'groupId');
+		var groupId= this.paramMap.get('groupId');
 
 		// create a new group if one has not been given
 		if ( ! groupId )

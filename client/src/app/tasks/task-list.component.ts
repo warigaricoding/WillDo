@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { interval } from 'rxjs';
+import { interval, Observable, combineLatest } from 'rxjs';
 
 import { TaskService } from './tasks.service'; // this service handles all the task-related server communications for us
 import { Task } from './task-class';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, ParamMap } from '@angular/router';
+import { startWith, switchMap } from 'rxjs/operators';
 
 @Component({
 	selector: 'task-list',
@@ -66,21 +67,25 @@ export class TaskListComponent implements OnInit {
 	constructor(private taskService: TaskService, private activateRoute: ActivatedRoute) { }
 
 	ngOnInit() {
-		interval(500).subscribe( () => this.update() ); // we auto-refresh the task list every 0.5 seconds //// temporary method for easily refreshing tasks
-		// observables are just a way of listening to events
-			// {observable}.subscribe tells the observable to call the function when something happens
-			// it's like a newspaper letting us know 'Extra! Extra!', after which we call `this.update`
-			// interval(...) is an observable that notifies its subscriber at the given interval in milliseconds
-			// Note: syntax for lambda / anonymous function: {function args} => {function body}
-				// Left side of the arrow is input; Right side is body & ouput
+		// update the current group whenever the view switches or whenever 500 ms has elapsed
+		combineLatest( interval(500).pipe(startWith(0)), this.activateRoute.paramMap )
+			.pipe( switchMap( x => this.request(x[1]) ) )
+			.subscribe( tasks => this.onRequestReturn(tasks) );
+			// interval is a temporary method for easily refreshing tasks
+				// observables are just a way of listening to events
+					// *.subscribe tells the observable to call the function when something happens
+						// in this case when the server returns
+					// here, switchMap requests data from the server, cancelling and removing previous requests from memory
+					// a pipe, like startWith, simply transfrorms the current observable
+						// in this case startWith causes the interval event to trigger in 0 seconds the first time
 	}
 
-	update() {
-		// ask the TaskService to update the list of tasks
-		this.owner= TaskService.getFromRoute(this.activateRoute, 'groupId');
-		this.taskService.getAll(this.owner)
-						.subscribe( tasks => this.tasks= tasks.sort(Task.compare) );
-						// replace the old task list with the new the new task list from the server (after we receive it)
+	request(paramMap: ParamMap): Observable<Task[]> {
+		return this.taskService.getAll(paramMap.get('groupId'));
+	}
+
+	onRequestReturn(tasks: Task[]) {
+		this.tasks= tasks.sort(Task.compare);
 	}
 
 	/** handles changes to the checkbox */

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 
 import { GroupService } from './groups.service'; // this service handles all the group-related server communications for us
@@ -41,8 +41,9 @@ import { Group } from './group-class';
 export class GroupListComponent implements OnInit {
 
 	groups: Group[];
+	currentGroupId: string;
 
-	constructor(private groupService: GroupService, private router: Router, private location: Location) { }
+	constructor(private groupService: GroupService, private activatedRoute: ActivatedRoute, private location: Location) { }
 
 	ngOnInit() {
 		this.update();
@@ -57,10 +58,9 @@ export class GroupListComponent implements OnInit {
 	}
 
 	getClassState( groupId: string ): string {
-		if ( groupId != GroupService.getFromRoute(this.router.routerState.root, 'groupId') )
+		if ( groupId !== this.activatedRoute.firstChild.snapshot.paramMap.get('groupId') )
 			return 'groupUnselected';
 		else return "";
 	}
-
 
 }

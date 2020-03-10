@@ -71,14 +71,6 @@ export class ApiService<T>
 		return this.http.put(requestURL, this.toApiObject(item), this.httpOptions).pipe( map( this.fromApiObject ) );
 	}
 
-	public static getFromRoute(route: ActivatedRoute, param: string) {
-			for ( ; route; route= route.firstChild ) {
-				let paramValue= route.snapshot.paramMap.get(param);
-				if ( paramValue )
-					return paramValue;
-			}
-	}
-
 	protected delete(item: T | string, entityId?: string): Observable<T>
 	{
 		if ( ! item )

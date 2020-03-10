@@ -18,5 +18,5 @@ cd -
 
 
 # open the web page
-sleep 5
+sleep 10
 xdg-open http://localhost:4200/

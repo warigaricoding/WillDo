@@ -19,53 +19,32 @@ const appRoutes: Routes
 			path: 'group/:groupId',
 			component: TaskListComponent,
 			children: [
-				{
-					path: 'tasks',
-					component: DynamicView.get(TaskDetailComponent) // wraps the component in a screen-dependent modal
-				},
-				{
-					path: 'tasks/:taskId',
-					component: DynamicView.get(TaskDetailComponent)
-				}
+				DynamicView.createRoute('tasks', TaskDetailComponent),
+				DynamicView.createRoute('tasks/:taskId', TaskDetailComponent)
 			]
 		},
 		{
 			path: '',
 			component: TaskListComponent,
 			children: [
-				{
-					path: 'tasks',
-					component: DynamicView.get(TaskDetailComponent)
-				},
-				{
-					path: 'tasks/:taskId',
-					component: DynamicView.get(TaskDetailComponent)
-				}
+				DynamicView.createRoute('tasks', TaskDetailComponent),
+				DynamicView.createRoute('tasks/:taskId', TaskDetailComponent)
 			]
 		},
-		{
-			path: ':groupId',
-			component: DynamicView.get(GroupDetailComponent),
-			outlet: 'g'
-		},
-		{
-			path: ':',
-			pathMatch: 'full',
-			component: DynamicView.get(GroupDetailComponent),
-			outlet: 'g'
-		}
+		DynamicView.createRoute(':groupId', GroupDetailComponent, 'g'),
+		DynamicView.createRoute(':', GroupDetailComponent, 'g', 'full')
 	];
 
 
 @NgModule({
   declarations: [
+	DynamicView, // wraps the given component in a screen-dependent context
     AppComponent,
 	TaskListComponent,
-	GroupListComponent
-  ].concat(
-	DynamicView.getUserComponents(), // array of all components put in a dynamic context
-	DynamicView.getGeneratedComponents() // array of all dynamically created components
-  ),
+	GroupListComponent,
+	TaskDetailComponent,
+	GroupDetailComponent
+  ],
   imports: [
     BrowserModule,
 	FormsModule,
@@ -81,7 +60,6 @@ const appRoutes: Routes
   ],
   exports: [RouterModule],
   providers: [],
-  bootstrap: [AppComponent],
-  entryComponents: DynamicView.getUserComponents() // array of all components put a dynamic context
+  bootstrap: [AppComponent]
 })
 export class AppModule { }

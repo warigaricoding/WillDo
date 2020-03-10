@@ -20,5 +20,5 @@ start /b cmd /c node_modules\.bin\ng.cmd serve
 
 
 :: open the web page
-timeout 5
+timeout 10
 start http://localhost:4200/
