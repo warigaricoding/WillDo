@@ -49,13 +49,21 @@ import { Task } from './task-class';
 					
 			</ion-card-content>
 
-			<div style="position:absolute;bottom:0px">
-				<ion-buttons>
-					<ion-button fill="clear" (click)="onDelete()">
-						<ion-icon name="trash"></ion-icon>
+			<ion-buttons style="position:absolute;bottom:0px">
+				<ion-button (click)="onDelete()" [hidden]="!task.id">
+					<ion-icon name="trash"></ion-icon>
+				</ion-button>
+			</ion-buttons>
+			<ion-toolbar style="position:absolute;bottom:0px">
+				<ion-buttons slot="end">
+					<ion-button (click)="close()" slot="end">
+						<ion-label> {{ task.id ? 'Close' : 'Cancel' }} </ion-label>
+					</ion-button>
+					<ion-button fill="outline" [hidden]="!!task.id" (click)="onChange('submit');close()" [disabled]="!task.header">
+						<ion-label>Create</ion-label>
 					</ion-button>
 				</ion-buttons>
-			</div>
+			</ion-toolbar>
 
 		</ion-card>	
 	`,
@@ -103,10 +111,10 @@ export class TaskDetailComponent implements OnInit
 	}
 
 	// handles user input
-	onChange() {
+	onChange(submit: boolean) {
 		if ( ! this.init )
 			return false;
-		this.task.onChange(this.taskService);
+		this.task.onChange(this.taskService, submit);
 	}
 
 	// handles changes to the checkbox
@@ -117,6 +125,10 @@ export class TaskDetailComponent implements OnInit
 	onDelete() {
 		if ( window.confirm("Are you sure you want to delete this task?") )
 			this.taskService.remove(this.task).subscribe(),
-			window.history.back();
+			this.close();
+	}
+
+	close() {
+		window.history.back(); // temporary
 	}
 }

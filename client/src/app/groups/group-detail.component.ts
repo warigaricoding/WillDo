@@ -7,29 +7,40 @@ import { Group } from './group-class';
 @Component({
 	selector: 'group-detail',
 	template: `
-		<ion-header>
-			<ion-title class="ion-text-center">
-				<ion-input [(ngModel)]="group.displayName" placeholder="[enter group name]"></ion-input>
-			</ion-title>
-		</ion-header>
+		<ion-card>
+		
+			<ion-card-header>
+				<ion-title class="ion-text-center">
+					<ion-input [(ngModel)]="group.displayName" placeholder="[enter group name]"></ion-input>
+				</ion-title>
+			</ion-card-header>
 
-		<ion-content>
+			<ion-card-content>
 
-			<ion-item>
-				<ion-label>Members:</ion-label>
-			</ion-item>
+				<ion-item>
+					<ion-label>Members:</ion-label>
+				</ion-item>
 
-		</ion-content>
+			</ion-card-content>
 
-		<ion-footer>
-			<ion-toolbar>
+			<ion-toolbar style="position:absolute;bottom:0px">
 				<ion-buttons slot="end">
 					<ion-button [routerLink]="{ outlets: { g: null } }">Cancel</ion-button>
-					<ion-button type="submit" [disabled]="!group.isValid()" [routerLink]="{ outlets: { g: null } }" (click)="onSubmit()">Submit</ion-button>	
+					<ion-button type="submit" [disabled]="!group.isValid()" [routerLink]="{ outlets: { g: null } }" (click)="onSubmit()">
+						{{ group.id ?  'Update' : 'Create' }}
+					</ion-button>	
 				</ion-buttons>
 			</ion-toolbar>
-		</ion-footer>
-	`
+
+		</ion-card>	
+	`,
+	styles: [`
+		ion-card {
+			margin: 0;
+			width: 100%;
+			height: 100%;
+		}
+	`]
 })
 export class GroupDetailComponent implements OnInit
 {

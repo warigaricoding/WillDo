@@ -6,16 +6,18 @@ which stores the main ['app-root' component](src/app/app.component.ts)
 Each functionality (i.e. tasks, groups) consists of multiple UI components `*.component` that share a class `*-class`
 and communicate with the server through its service `*.service`
 
-the ['group-list' component](src/app/groups/group-list.component.ts) is an example of a component with data-binding and router navigation  
+the ['group-list' component](src/app/groups/group-list.component.ts) is an example of a component with data-binding and router navigation
 
-[Node.js](https://nodejs.org/en/download/) and package dependencies are installed with maven  
 
-Development Updates: 
-	- In dev mode, a proxy causes the client & server to share the same origin url, while still allowing for angular live reload  
-	- Data returned by the server is now auto-mapped to include object-oriented functionality to allow the reuse of common behaviors  
-	- when maven runs in production mode--i.e. by running `mvnw spring-boot:run -Pprod`--the client is built and deployed to the backend server  
-		(http://localhost:8080/ returns the angular app, while the api is at http://localhost:8080/api/)  
-	- Simpler project structure where related modules are all stored together in a folder and each component's html and css is inside it's `.ts` file  
+Development Updates:   
+	- In dev mode, a proxy causes the client & server to share the same origin url, while still allowing for angular live reload   
+	- Data returned by the server is auto-mapped to include object-oriented functionality, allowing the reuse of common behaviors   
+	- when maven runs in production mode--i.e. `mvnw spring-boot:run -Pprod`--the client is built & deployed to the backend   
+		(http://localhost:8080/ returns the angular app, while the api is at http://localhost:8080/api/)   
+	- Simpler project structure where classes are grouped by functionality and each UI component's html & css is inside it's `.ts` file  
+
+Note: [Node.js](https://nodejs.org/en/download/) and package dependencies are installed with maven  
+      Most proxy errors can be completely ignored if ever encountered
 
 
 ## Development server

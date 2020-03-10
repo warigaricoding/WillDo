@@ -15,6 +15,10 @@ import { Component } from '@angular/core';
 		<ion-split-pane when="md" contentId="mainView">
 			<ion-menu contentId="mainView">
 				<group-list>
+						<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
+						<!-- 'group-list' is a menu of groups for the current user -->
+						<!--    (  see  'app/groups/group-list.component.ts'  )    -->
+						<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
 				</group-list>
 			</ion-menu>
 			<ion-content id="mainView">
@@ -73,6 +77,7 @@ export class DynamicView
 		this.location.onUrlChange( () => modal && modal.dismiss(modal= null, 'url') );
 	}
 
+	/** returns a Route configuration for mapping the given URL to the given component in a dynamic context */
 	public static createRoute(path: string, baseComponent: Type<any>, outlet?: string, pathMatch?: string): Route {
 		return {
 			path: path,

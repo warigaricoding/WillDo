@@ -76,21 +76,23 @@ export class Task
 
 
 	// handles user input
-	onChange(taskService: TaskService)
+	onChange(taskService: TaskService, submit?: boolean)
 	{
-		console.log(this); // for debugging
 
 		if ( this.id ) // update the task
 		{
+			console.log(this); // for debugging
+			
 			const version= ++this.version;
 			taskService.update(this/*, this.owner*/)
 			           .subscribe( task => this.onUpdate(task, version) );
 		}
-		else if ( ! this.version ) // task is completely new b/c this.ready is also false
-			this.version= 1, // task is being added to the server
+		else if ( this.version )
+			this.version= 2; // this tells us the task has changed while being added to the server
+		else if ( submit ) // task is completely new b/c it has no id
+			this.version= 1, // this tells us the task is being added to the server
 			taskService.add(this/*, this.owner*/) // send the new task to the server
 			           .subscribe( task => this.onAdd(task, taskService) );
-		else this.version= 2; // task has changed while being added to the server
 
 	}
 
@@ -101,7 +103,7 @@ export class Task
 		if ( this.version > 1 ) // reward the new task for patiently waiting!
 			this.version= 0,
 			this.id= task.id, // the new id returned by the server
-			this.onChange(service); // send changes to the task to the server
+			this.onChange(service, true); // send changes to the task to the server
 		else this.version= 0,
 			 task.status= this.status, // temporary
 			 Object.assign(this, task);

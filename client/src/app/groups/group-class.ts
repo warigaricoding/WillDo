@@ -29,13 +29,15 @@ export class Group
 		this.admins=  admins ?  Array.from(admins) : [];
 	}
 
+	/** updates or creates a group depending on whether it already exists on the server */
 	push(groupService: GroupService ): Observable<Group>
 	{
-		if ( this.id ) 
+		if ( this.id ) // if the group already has an id, all we need to do is update it
 			return groupService.update(this);
-		else return groupService.add(this);
+		else return groupService.add(this); // creates a new group
 	}
 
+	/** determines if the group is allowed to be sent to the server */
 	isValid() {
 		return  !! this.displayName;
 	}
