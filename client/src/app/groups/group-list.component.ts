@@ -47,7 +47,7 @@ export class GroupListComponent implements OnInit {
 
 	ngOnInit() {
 		this.update();
-		this.location.onUrlChange( ()=> this.update() );
+		this.location.onUrlChange( ()=> this.update() ); // only update groups when the user navigates the app
 	}
 
 	update() {
@@ -60,7 +60,7 @@ export class GroupListComponent implements OnInit {
 	getClassState( groupId: string ): string {
 		if ( groupId !== this.activatedRoute.firstChild.snapshot.paramMap.get('groupId') )
 			return 'groupUnselected';
-		else return "";
+		else return ""; // highlights the current group
 	}
 
 }

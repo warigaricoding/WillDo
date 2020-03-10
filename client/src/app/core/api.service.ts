@@ -16,8 +16,10 @@ import { ApiHelper } from  './api.helper';
 })
 export class ApiService<T>
 {
-
+	/** the API's root directory */
 	protected baseURL= "/api/";
+
+	/** the url directory name for prefixing the second id of a multi-relational item */
 	protected entityName= "group";
 
 	protected httpOptions= {
