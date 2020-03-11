@@ -9,8 +9,9 @@ public class Task {
     private String summary;
     private String description;
     private String date;
-    private boolean state;
     private String groupId;
+    private boolean state;
+
     public Task() {}
 
     public void setId(String id){

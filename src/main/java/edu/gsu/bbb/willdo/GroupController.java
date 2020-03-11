@@ -11,8 +11,8 @@ import java.util.Optional;
 public class GroupController {
     @Autowired
     GroupRepository groupRepository;
-    @Autowired
-    TaskRepository taskRepository;
+
+
 
     @GetMapping("/Groups")
     public List<Group> getGroups(){
@@ -45,7 +45,7 @@ public class GroupController {
     public Group addTask(@RequestBody Task newTask,@PathVariable String id){
         newTask.setId(ObjectId.get().toString());
         Optional<Group> temp = groupRepository.findById(id);
-        if(taskRepository.findById(id).isPresent()){
+        if(groupRepository.findById(id).isPresent()){
             Optional<Group> findGroup = groupRepository.findById(id);
             Group updated = findGroup.get();
             findGroup
