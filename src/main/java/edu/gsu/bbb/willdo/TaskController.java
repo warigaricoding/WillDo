@@ -18,23 +18,23 @@ public class TaskController {
         return repository.findAll();
     }
 
-    @GetMapping("/tasks/{id}") //get one specific task
-    public Optional<Task> task(@PathVariable String id) {
-        Optional<Task> findTask = repository.findById(id);
+    @GetMapping("/tasks/{groupId}") //get one specific task
+    public Optional<Task> taskFromGroup(@PathVariable String groupId) {
+        Optional<Task> findTasks = repository.findById(groupId); //Checks for groups with a like groupId
         Optional<Task> empty = Optional.empty(); //to see if it leaves loop
 
-        if(!findTask.isPresent()) {
+        if(!findTasks.isPresent()) {
             //some response annotation; invalid parameters?
         } else {
-            return findTask;
+            return findTasks;
         }
         return empty; //should not return this ever
     }
 
-    @PostMapping("/tasks") //saves new task as new doc in DB
-    public Object newTask(@RequestBody Task newTask) {
+    @PostMapping("/tasks/{groupId}") //saves new task as new doc in DB
+    public Object newTaskToGroup(@RequestBody Task newTask, @PathVariable String groupId) {
         Optional<Task> empty = Optional.empty(); //to see if it leaves loop
-
+        newTask.setGroupId(groupId);
         if(newTask.getSummary() == null){
             //some response annotation; null values
         } else {
@@ -61,6 +61,10 @@ public class TaskController {
                                 && newTask.isState()) {
                             task.setState(newTask.isState());
                         }
+//                        if (newTask.getGroup() != null) {
+//                            task.setGroup(newTask.getGroup());
+//                        }
+
                         return repository.save(task);
                     });
         }
