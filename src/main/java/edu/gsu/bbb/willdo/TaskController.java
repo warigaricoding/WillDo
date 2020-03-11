@@ -18,9 +18,20 @@ public class TaskController {
         return repository.findAll();
     }
 
-    @GetMapping("/tasks/{groupId}") //get one specific task
+    @GetMapping("/tasks/groups/{groupId}") //get one specific task
     public List<Task> taskFromGroup(@PathVariable String groupId) {
         return repository.findAllByGroupId(groupId); //Uses List from TaskRepository to generate queries by GroupId
+    }
+    @GetMapping("/tasks/{taskId}")
+    public Optional<Task> findTask(@PathVariable String taskId){
+        Optional<Task> findTask = repository.findById(taskId);
+        Optional<Task> empty = Optional.empty();
+        if(!findTask.isPresent()){
+            //Some error message
+        }else{
+            return findTask;
+        }
+        return empty;
     }
 
     @PostMapping("/tasks/{groupId}") //saves new task as new doc in DB
@@ -35,10 +46,10 @@ public class TaskController {
         return empty; //should not return this ever
     }
 
-    @PutMapping("/tasks/{id}") //updates task already in DB
-    public Task updateTask(@RequestBody Task newTask, @PathVariable String id) {
-        if (repository.findById(id).isPresent()) {
-            Optional<Task> oldTaskInfo = repository.findById(id)
+    @PutMapping("/tasks/{taskId}") //updates task already in DB
+    public Task updateTask(@RequestBody Task newTask, @PathVariable String taskId) {
+        if (repository.findById(taskId).isPresent()) {
+            Optional<Task> oldTaskInfo = repository.findById(taskId)
                     .map(task -> { //Gets the data from the Optional and maps them to a new Task
                         if (newTask.getSummary() != null) {
                             task.setSummary(newTask.getSummary());
@@ -63,9 +74,9 @@ public class TaskController {
         return newTask; //sends original request body so we can see what broke it
     }
 
-    @DeleteMapping("/tasks/{id}")
-    public Optional<Task> deleteTask(@PathVariable String id){
-        Optional<Task> delTask = repository.findById(id);
+    @DeleteMapping("/tasks/{taskId}")
+    public Optional<Task> deleteTask(@PathVariable String taskId){
+        Optional<Task> delTask = repository.findById(taskId);
         Optional<Task> empty = Optional.empty();
         if(!delTask.isPresent()){
             //some error message

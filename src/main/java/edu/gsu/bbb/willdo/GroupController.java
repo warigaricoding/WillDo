@@ -19,9 +19,9 @@ public class GroupController {
         return groupRepository.findAll();
     }
 
-    @GetMapping("/Groups/{id}")
-    public Optional<Group> findGroup(@PathVariable String id){
-        Optional <Group> find = groupRepository.findById(id);
+    @GetMapping("/Groups/{groupId}")
+    public Optional<Group> findGroup(@PathVariable String groupId){
+        Optional <Group> find = groupRepository.findById(groupId);
         Optional <Group> empty = Optional.empty();
 
         if(!find.isPresent()){
@@ -41,10 +41,10 @@ public class GroupController {
         }
         return empty;
     }
-    @PutMapping("/Groups/{id}")
-    public Group updateGroup(@RequestBody Group newGroup,@PathVariable String id){
-        Optional<Group> temp = groupRepository.findById(id);
-        if(groupRepository.findById(id).isPresent()){
+    @PutMapping("/Groups/{groupId}")
+    public Group updateGroup(@RequestBody Group newGroup,@PathVariable String groupId){
+        Optional<Group> temp = groupRepository.findById(groupId);
+        if(groupRepository.findById(groupId).isPresent()){
             temp.map(group ->{
                         if(newGroup.getName()!=null){
                             group.setName(newGroup.getName());
