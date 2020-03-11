@@ -35,33 +35,24 @@ public class GroupController {
     public Object addGroup(@RequestBody Group group) {
         Optional<Group> empty = Optional.empty();
         if (group.getName() == null) {
-            //some error message
+            group.setName("Untitled Group");
         } else {
             return groupRepository.save(group);
         }
         return empty;
     }
     @PutMapping("/Groups/{id}")
-    public Group addTask(@RequestBody Task newTask,@PathVariable String id){
-        newTask.setId(ObjectId.get().toString());
+    public Group updateGroup(@RequestBody Group newGroup,@PathVariable String id){
         Optional<Group> temp = groupRepository.findById(id);
         if(groupRepository.findById(id).isPresent()){
-            Optional<Group> findGroup = groupRepository.findById(id);
-            Group updated = findGroup.get();
-            findGroup
-                    .map(group ->{
-                        if(updated.getTaskId() == null){
-                            updated.taskIdInit();
-                            updated.addTask(newTask.getId());
-                            group.setTaskId(updated.getTaskId());
-                        }else{
-                            updated.addTask(newTask.getId());
-                            group.setTaskId(updated.getTaskId());
+            temp.map(group ->{
+                        if(newGroup.getName()!=null){
+                            group.setName(newGroup.getName());
                         }
                         return groupRepository.save(group);
                     });
         }
-        return temp.get();
+        return newGroup;
     }
 
 

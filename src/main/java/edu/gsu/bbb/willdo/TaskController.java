@@ -20,13 +20,13 @@ public class TaskController {
 
     @GetMapping("/tasks/{groupId}") //get one specific task
     public List<Task> taskFromGroup(@PathVariable String groupId) {
-        return repository.findAllByGroupId(groupId);
+        return repository.findAllByGroupId(groupId); //Uses List from TaskRepository to generate queries by GroupId
     }
 
     @PostMapping("/tasks/{groupId}") //saves new task as new doc in DB
     public Object newTaskToGroup(@RequestBody Task newTask, @PathVariable String groupId) {
         Optional<Task> empty = Optional.empty(); //to see if it leaves loop
-        newTask.setGroupId(groupId);
+        newTask.setGroupId(groupId); //Sets the PathVariable GroupId into the new Task
         if(newTask.getSummary() == null){
             //some response annotation; null values
         } else {
@@ -39,7 +39,7 @@ public class TaskController {
     public Task updateTask(@RequestBody Task newTask, @PathVariable String id) {
         if (repository.findById(id).isPresent()) {
             Optional<Task> oldTaskInfo = repository.findById(id)
-                    .map(task -> {
+                    .map(task -> { //Gets the data from the Optional and maps them to a new Task
                         if (newTask.getSummary() != null) {
                             task.setSummary(newTask.getSummary());
                         }
@@ -62,6 +62,7 @@ public class TaskController {
         }
         return newTask; //sends original request body so we can see what broke it
     }
+
     @DeleteMapping("/tasks/{id}")
     public Optional<Task> deleteTask(@PathVariable String id){
         Optional<Task> delTask = repository.findById(id);
@@ -71,6 +72,6 @@ public class TaskController {
         }else{
             repository.delete(delTask.get());
         }
-        return empty;
+        return empty; //Should Not Run
     }
 }
