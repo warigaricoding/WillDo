@@ -10,7 +10,7 @@ public class Task {
     private String description;
     private String date;
     private boolean state;
-
+    private String groupId;
     public Task() {}
 
     public void setId(String id){
@@ -49,5 +49,13 @@ public class Task {
 
     public void setState(boolean state) {
         this.state = state;
+    }
+
+    public String getGroupId(){
+        return this.groupId;
+    }
+
+    public void setGroupId(String id){
+        this.groupId = id;
     }
 }
