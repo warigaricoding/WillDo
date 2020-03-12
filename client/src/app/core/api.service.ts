@@ -2,12 +2,10 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs'; // asynchronous event-based library
 import { catchError, map, tap } from 'rxjs/operators';
-import { ActivatedRoute } from '@angular/router';
 
-import { AuthService } from './auth.service';
 import { ApiHelper } from  './api.helper';
 
-/** Serves as the base class for all web services.
+/** Serves as the base class for all our web services.
  *      Auto-validates the objects and properties going to and from the server.
  *      Makes sure both communicate seamlessly.
  */
@@ -30,7 +28,6 @@ export class ApiService<T>
 
 	protected constructor(
 		private http: HttpClient,
-		private auth: AuthService,
 		private helper: ApiHelper<T>
 	)
 	{

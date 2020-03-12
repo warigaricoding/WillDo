@@ -12,7 +12,7 @@ import { startWith, switchMap } from 'rxjs/operators';
 		<router-outlet>
 			<!-- this router outlet switches between tasks -->
 
-			<!--ion-popover-->
+			<!--ion-modal-->
 
 				<!--task-detail-->
 					<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * -->
@@ -21,7 +21,7 @@ import { startWith, switchMap } from 'rxjs/operators';
 					<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * -->
 				<!--/task-detail-->
 
-			<!--/ion-popover-->
+			<!--/ion-modal-->
 
 		</router-outlet>
 		<ion-grid fixed>
@@ -80,10 +80,12 @@ export class TaskListComponent implements OnInit {
 						// in this case startWith causes the interval event to trigger in 0 seconds the first time
 	}
 
+	/** requests all tasks from the server (for a specific group if it's in the URL) */
 	request(paramMap: ParamMap): Observable<Task[]> {
 		return this.taskService.getAll(paramMap.get('groupId'));
 	}
 
+	/** sorts the list of tasks from the server and updates the view */
 	onRequestReturn(tasks: Task[]) {
 		this.tasks= tasks.sort(Task.compare);
 	}
@@ -93,6 +95,7 @@ export class TaskListComponent implements OnInit {
 		task.onCheck(this.taskService);
 	}
 
+	/** returns the URL for opening a specific task (routing is currently configured to show the task in a modal) */
 	getLinkFor(task: Task) {
 		if ( task.owner )
 			return [ '/group', task.owner, 'tasks', task.id ];

@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 
+/** the root of angular's component heirachy, displaying the entire application */
 @Component({
 	selector: 'app-root',
 	template: `

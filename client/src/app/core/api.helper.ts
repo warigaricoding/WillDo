@@ -17,6 +17,10 @@ export function ApiProperty(apiName: string, apiType?: string)
 }
 
 
+	// look away I say
+		// these are not the droids you're looking for
+			// if you're in here you've gone too far down the rabbit hole
+
 
 const ApiPropertiesKey= Symbol("__apiPropertiesMetadata__");
 

@@ -18,7 +18,7 @@ const appRoutes: Routes
 	[
 		{
 			path: 'group/:groupId',
-			component: TaskListComponent, // the main component when view for a specific group
+			component: TaskListComponent, // the main component when viewed for a specific group
 			children: [
 				DynamicView.createRoute('tasks', TaskDetailComponent), // the view for creating a new task
 				DynamicView.createRoute('tasks/:taskId', TaskDetailComponent) // the view for editing a task
@@ -32,8 +32,8 @@ const appRoutes: Routes
 				DynamicView.createRoute('tasks/:taskId', TaskDetailComponent) // the default view for editing a task
 			]
 		},
-		DynamicView.createRoute(':groupId', GroupDetailComponent, 'g'), // the view for creating a new group
-		DynamicView.createRoute(':', GroupDetailComponent, 'g', 'full') // the view for modifying an existing group
+		DynamicView.createRoute(':groupId', GroupDetailComponent, 'g'), // the view for modifying an existing group
+		DynamicView.createRoute(':', GroupDetailComponent, 'g', 'full') // the view for creating a new group
 	];
 
 

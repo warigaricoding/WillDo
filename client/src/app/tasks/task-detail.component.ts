@@ -78,8 +78,11 @@ import { Task } from './task-class';
 export class TaskDetailComponent implements OnInit
 {
 	task: Task;
+
+	/** indicates whether or not the component's data has been fully initialized */
 	init: boolean;
 
+	/** these parameters indirectly come from the current URL in the browser */
 	@Input()
 	paramMap: ParamMap;
 
@@ -97,37 +100,40 @@ export class TaskDetailComponent implements OnInit
 		// create a new task if one has not been given
 		if ( ! taskId )
 			this.task= new Task(null, groupId),
-			this.init= true;
+			this.init= true; // our task is ready!
 		else {
 			this.task= new Task(taskId, groupId);
 			this.taskService.get(taskId, groupId)
 							.subscribe(
 								task => {
 									this.task= task;
+									// our task is almost ready...
 									setTimeout( () => this.init= true , 100 );
 								}
 							);
 		}
 	}
 
-	// handles user input
-	onChange(submit: boolean) {
-		if ( ! this.init )
+	/** handles user input */
+	onChange(submit?) { // submit is an optional parameter (truthy when the user wants to add a task to the server)
+		if ( ! this.init ) // not yet ready
 			return false;
-		this.task.onChange(this.taskService, submit);
+		this.task.onChange(this.taskService, !!submit);
 	}
 
-	// handles changes to the checkbox
+	/** handles changes to the checkbox */
 	onCheck() {
 		this.task.onCheck(this.taskService);
 	}
 
+	/** when the user clicks the trash icon */
 	onDelete() {
 		if ( window.confirm("Are you sure you want to delete this task?") )
 			this.taskService.remove(this.task).subscribe(),
 			this.close();
 	}
 
+	/** goes back to the previous view */
 	close() {
 		window.history.back(); // temporary
 	}
