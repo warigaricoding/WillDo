@@ -62,7 +62,6 @@ import { startWith, switchMap } from 'rxjs/operators';
 export class TaskListComponent implements OnInit {
 
 	tasks: Task[];
-	owner: string;
 
 	constructor(private taskService: TaskService, private activateRoute: ActivatedRoute) { }
 
@@ -92,7 +91,7 @@ export class TaskListComponent implements OnInit {
 
 	/** handles changes to the checkbox */
 	onCheck(task: Task) {
-		task.onCheck(this.taskService);
+		task.onCheck(this.taskService); // give the task our service so it can update its status on our server
 	}
 
 	/** returns the URL for opening a specific task (routing is currently configured to show the task in a modal) */

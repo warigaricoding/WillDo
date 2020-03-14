@@ -1,6 +1,5 @@
 import { ApiIgnore, ApiProperty } from '../core/api.helper';
 import { GroupService } from './groups.service';
-import { Observable } from 'rxjs';
 
 export class Group
 {
@@ -30,11 +29,14 @@ export class Group
 	}
 
 	/** updates or creates a group depending on whether it already exists on the server */
-	push(groupService: GroupService ): Observable<Group>
-	{
+	pushChanges(
+		groupService: GroupService,
+		callback?: (group) => void, // what do when the change is pushed
+		onError?: (e) => void
+	) {
 		if ( this.id ) // if the group already has an id, all we need to do is update it
-			return groupService.update(this);
-		else return groupService.add(this); // creates a new group
+			groupService.update(this).subscribe({ next: callback, error: onError });
+		else groupService.add(this).subscribe({ next: callback, error: onError }); // creates a new group
 	}
 
 	/** determines if the group is allowed to be sent to the server */

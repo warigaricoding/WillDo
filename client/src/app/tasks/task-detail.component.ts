@@ -123,7 +123,7 @@ export class TaskDetailComponent implements OnInit
 
 	/** handles changes to the checkbox */
 	onCheck() {
-		this.task.onCheck(this.taskService);
+		this.task.onCheck(this.taskService); // give the task our service so it can update its status on our server
 	}
 
 	/** when the user clicks the trash icon */

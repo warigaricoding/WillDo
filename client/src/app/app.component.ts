@@ -75,11 +75,12 @@ export class DynamicView
 				   .create( { component: component, componentProps: { paramMap: this.activatedRoute.snapshot.paramMap } } );
 		modal.present(); // show the modal
 		modal.onWillDismiss().then( (e) => e.role == 'url' || this.location.back() ); // go backwards when the view is closed
-		this.location.onUrlChange( () => modal && modal.dismiss(modal= null, 'url') );
+		this.location.onUrlChange( () => modal && modal.dismiss(modal= null, 'url') ); // closes the modal when the current URL changes
 	}
 
 	/** returns a Route configuration for mapping the given URL to the given component in a dynamic context */
 	public static createRoute(path: string, baseComponent: Type<any>, outlet?: string, pathMatch?: string): Route {
+		// used in app.module.ts
 		return {
 			path: path,
 			component: DynamicView,

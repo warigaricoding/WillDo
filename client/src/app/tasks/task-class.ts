@@ -2,8 +2,7 @@ import { ApiIgnore, ApiProperty } from '../core/api.helper';
 import { TaskService } from './tasks.service';
 
 enum TaskState {
-	New= 0,
-	UpToDate= 0,
+	UpToDate= 0, // a new task is also considered up-to-date until it's submitted to the server
 	StillBeingAdded= 1,
 	ChangedDuringCreation= 2 // we're not likely to ever encounter this state
 }
@@ -45,7 +44,7 @@ export class Task
 		this.dueDate= new Date ( dueDate || Date.now() + 24*3600*1000 ).toISOString();
 		this.description= String( description || "" );
 		
-		this.version= TaskState.New;
+		this.version= TaskState.UpToDate;
 	}
 
 	isCompleted(): boolean {

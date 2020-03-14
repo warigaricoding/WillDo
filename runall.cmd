@@ -16,9 +16,6 @@ start /b cmd /c mvnw.cmd spring-boot:run
 cd client
 IF NOT EXIST node_modules\.bin\ng.cmd call npm install
 
-start /b cmd /c node_modules\.bin\ng.cmd serve
+call node_modules\.bin\ng.cmd serve --open
 
-
-:: open the web page
-timeout 10
-start http://localhost:4200/
+pause

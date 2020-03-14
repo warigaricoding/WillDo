@@ -26,6 +26,7 @@ import { Group } from './group-class';
 			<ion-toolbar style="position:absolute;bottom:0px">
 				<ion-buttons slot="end">
 					<ion-button [routerLink]="{ outlets: { g: null } }">Cancel</ion-button>
+					<!-- since group-detail is in the 'g' outlet, navigating to null closes the view --> 
 					<ion-button type="submit" [disabled]="!group.isValid()" [routerLink]="{ outlets: { g: null } }" (click)="onSubmit()">
 						{{ group.id ?  'Update' : 'Create' }}
 					</ion-button>	
@@ -68,20 +69,15 @@ export class GroupDetailComponent implements OnInit
 			this.groupService.get(groupId)
 							.subscribe(
 								group => {
-									this.group= group;
+									this.group= group; // updates the UI with the group from the server
 								}
-							);
+							); // subscribe a service's observable or nothing happens
 		}
 	}
 
 	onSubmit() {
 		if ( this.group.isValid() )
-			this.group.push(this.groupService)
-					.subscribe(
-						group => {
-							this.router.navigate([{outlets:{g:[]}}]);
-						}
-					);
+			this.group.pushChanges(this.groupService);
 	}
 	
 }

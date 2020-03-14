@@ -16,13 +16,18 @@ import { Group } from './group-class';
 				Create a new group...
 			</ion-label>
 		</ion-item>
-		<ion-item *ngFor="let group of groups">
+		<ion-item *ngFor="let group of groups"><!-- *ngFor repeats the element for each item in the array (groups) -->
 			<a [class]="'groupLink '+getClassState(group.id)" [routerLink]="[ '/group', group.id ]">
+				<!-- where 'x' is an element's property i.e. every element in angular can have a 'routerLink'
+				     [x] denotes model -> view binding, where javascript is the input and the view is the output
+				     (x) denotes view -> model binding, where the view triggers an event handled by javascript
+				     [(x)] denotes two-way binding, where the view and model are kept in sync -->
 				{{ group.displayName }}
+				<!-- {{ x }} is used outside of <> tags to evaluate javascript expressions -->
 				&nbsp;
 			</a>
 			<a [class]="getClassState(group.id)" [routerLink]="{ outlets: { g: [ group.id ] } }" slot="end">
-				<ion-icon name="create"></ion-icon>
+				<ion-icon name="create"><!--our group edit icon--></ion-icon>
 			</a>
 		</ion-item>
 		<router-outlet name="g">
@@ -42,7 +47,6 @@ import { Group } from './group-class';
 export class GroupListComponent implements OnInit {
 
 	groups: Group[];
-	currentGroupId: string;
 
 	constructor(private groupService: GroupService, private activatedRoute: ActivatedRoute, private location: Location) { }
 
@@ -56,7 +60,7 @@ export class GroupListComponent implements OnInit {
 	update() {
 		this.groupService.getAll()
 						.subscribe( groups => this.groups= groups );
-						// replace the old group list with the new the new group list from the server (after we receive it)
+						// replace the UI's list with the new list of groups from the server (after we receive it)
 	}
 
 	/** used by each row in the list to determine its CSS properties */
