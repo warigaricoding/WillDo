@@ -13,12 +13,6 @@ public class TaskController {
     @Autowired
     TaskRepository repository;
 
-//    Obsolete because tasks are found by group now
-//    @GetMapping("/tasks") //get all tasks
-//    public List<Task> all() {
-//        return repository.findAll();
-//    }
-
     @GetMapping("/tasks/groups/{groupId}") //get one specific task
     public List<Task> taskFromGroup(@PathVariable String groupId) {
         return repository.findAllByGroupId(groupId); //Uses List from TaskRepository to generate queries by GroupId
