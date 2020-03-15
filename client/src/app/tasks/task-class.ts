@@ -15,7 +15,7 @@ export class Task
 	id: string;
 	
 	/** the group or entity this task was created for (id) */
-	@ApiProperty("group")
+	@ApiProperty("groupId")
 	owner: string;
 
 	@ApiProperty("state", "boolean")
