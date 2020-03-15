@@ -11,7 +11,6 @@ public class Group {
     private String id;
     //private User admin;  Will be implemented with the addition of users
     private String name;
-    //private List<Users> groupList; Needs user implementation
 
     public Group() {}
 
@@ -30,5 +29,4 @@ public class Group {
     public void setName(String name) {
         this.name = name;
     }
-
 }
