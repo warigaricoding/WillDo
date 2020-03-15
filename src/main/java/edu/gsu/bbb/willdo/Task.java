@@ -4,16 +4,23 @@ import org.springframework.data.annotation.Id;
 
 public class Task {
     @Id
-    private String id;
+    private String id; //Only used for PutMapping
 
     private String summary;
     private String description;
     private String date;
+    private String groupId; //Key to linking a task to a group, should be null until instantiated
     private boolean state;
 
     public Task() {}
 
-    public String getId() { return id; }
+    public void setId(String id){
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
+    }
 
     public String getSummary() {
         return summary;
@@ -45,5 +52,13 @@ public class Task {
 
     public void setState(boolean state) {
         this.state = state;
+    }
+
+    public String getGroupId(){
+        return this.groupId;
+    }
+
+    public void setGroupId(String id){
+        this.groupId = id;
     }
 }
