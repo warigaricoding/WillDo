@@ -1,5 +1,0 @@
-#!/bin/sh
-cd `dirname $0`
-[ ! -f node_modules/.bin/ng ] && npm install
-./node_modules/.bin/ng serve
-cd -
