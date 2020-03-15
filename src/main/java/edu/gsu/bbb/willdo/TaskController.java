@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.*;
 
 @RestController
 @RequestMapping("/api")
@@ -13,7 +15,7 @@ public class TaskController {
     @Autowired
     TaskRepository repository;
 
-    @GetMapping("/tasks/groups/{groupId}") //get one specific task
+    @GetMapping("/tasks/group/{groupId}") //get tasks for a group
     public List<Task> taskFromGroup(@PathVariable String groupId) {
         return repository.findAllByGroupId(groupId); //Uses List from TaskRepository to generate queries by GroupId
     }
@@ -29,9 +31,11 @@ public class TaskController {
         }
     }
 
-    @PostMapping("/tasks/{groupId}") //saves new task as new doc in DB
-    public Object newTaskToGroup(@RequestBody Task newTask, @PathVariable String groupId) {
-        newTask.setGroupId(groupId); //Sets the PathVariable GroupId into the new Task
+    @PostMapping("/tasks") //saves new task as new doc in DB
+    public Object newTaskToGroup(@RequestBody Task newTask) {
+        if(newTask.getGroupId() == null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Provide Group Id");
+        }
         if(newTask.getSummary() == null){
             newTask.setSummary("New Task");
         }
