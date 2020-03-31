@@ -36,10 +36,11 @@ public class GroupController {
         Optional<Group> empty = Optional.empty();
         if (group.getName() == null) {
             group.setName("Untitled Group");
+            return groupRepository.save(group);
         } else {
             return groupRepository.save(group);
         }
-        return empty;
+
     }
     @PutMapping("/Groups/{groupId}")
     public Group updateGroup(@RequestBody Group newGroup,@PathVariable String groupId){
