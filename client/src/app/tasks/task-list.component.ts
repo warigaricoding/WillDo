@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, ParamMap } from '@angular/router';
 import { interval, Observable, combineLatest } from 'rxjs';
+import { startWith, switchMap } from 'rxjs/operators';
 
 import { TaskService } from './tasks.service'; // this service handles all the task-related server communications for us
 import { Task } from './task-class';
-import { ActivatedRoute, ParamMap } from '@angular/router';
-import { startWith, switchMap } from 'rxjs/operators';
 
 @Component({
 	selector: 'task-list',

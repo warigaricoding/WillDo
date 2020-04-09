@@ -43,7 +43,7 @@ export class ApiHelper<T>
 		const apiObj= {};
 			
 		if ( this.properties )
-			for ( const prop of  this.properties )
+			for ( const prop of this.properties )
 				apiObj[ prop.apiName ]= obj[ prop.name ];
 
 		if ( this.transformations )
@@ -57,12 +57,12 @@ export class ApiHelper<T>
 
 	public fromApiObject(apiObj: any): T
 	{
-		if ( ! this.init && ! this.initialize() )
+		if ( ! apiObj )
+			return apiObj;
+		else if ( ! this.init && ! this.initialize() )
 			if ( apiObj instanceof this.constructor )
 				return apiObj as T;
 			else return Object.assign(new this.constructor(), apiObj);
-		else if ( ! apiObj )
-			return apiObj;
 
 		const obj: T = new this.constructor();
 			

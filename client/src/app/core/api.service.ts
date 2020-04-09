@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpHeaderResponse } from '@angular/common/http';
 import { Observable, of } from 'rxjs'; // asynchronous event-based library
 import { catchError, map, tap } from 'rxjs/operators';
 
@@ -18,7 +18,7 @@ export class ApiService<T>
 	protected baseURL= "/api/";
 
 	/** the url directory name for prefixing the second id of a multi-relational item */
-	protected entityName= "group";
+	protected entityName= null;
 
 	protected httpOptions= {
 		headers: new HttpHeaders({
@@ -42,15 +42,15 @@ export class ApiService<T>
 		const requestURL=
 				entityId ? `${this.baseURL}/${this.entityName}/${entityId}`
 						 : this.baseURL;
-		return this.http.get(requestURL, this.httpOptions).pipe( map( this.fromApiArray ) )
+		return this.http.get(requestURL, this.httpOptions).pipe( map( this.fromApiArray ) );
 	}
 
-	public get(itemId: string, entityId?: string): Observable<T>
+	public get(itemId: string, entityId?: string, temporaryHeaders?: {}): Observable<T>
 	{
 		const requestURL=
 				entityId ? `${this.baseURL}/${itemId}/${this.entityName}/${entityId}`
 						 : `${this.baseURL}/${itemId}`;
-		return this.http.get(requestURL, this.httpOptions).pipe( map( this.fromApiObject ) );
+		return this.http.get( requestURL, this.getOptions(temporaryHeaders) ).pipe( map( this.fromApiObject ) );
 	}
 
 	public add(item: T, entityId?: string): Observable<T>
@@ -70,7 +70,7 @@ export class ApiService<T>
 		return this.http.put(requestURL, this.toApiObject(item), this.httpOptions).pipe( map( this.fromApiObject ) );
 	}
 
-	protected delete(item: T | string, entityId?: string): Observable<T>
+	protected delete(item: T | string, entityId?: string, temporaryHeaders?: object): Observable<T>
 	{
 		if ( ! item )
 			return null;
@@ -79,7 +79,12 @@ export class ApiService<T>
 				entityId ? `${this.baseURL}/${itemId}/${this.entityName}/${entityId}`
 						 : `${this.baseURL}/${itemId}`;
 		
-		return this.http.delete(requestURL, this.httpOptions).pipe( map( this.fromApiObject ) );
+		return this.http.delete( requestURL, this.getOptions(temporaryHeaders) ).pipe( map( this.fromApiObject ) );
+	}
+
+	protected getCustom(url: string, temporaryHeaders?: {}): Observable<T>
+	{
+		return this.http.get( url, this.getOptions(temporaryHeaders) ).pipe( map( this.fromApiObject ) );
 	}
 
 	/** makes sure the class object is in a compatible format with the api interface */
@@ -94,5 +99,22 @@ export class ApiService<T>
 	private _fromApiArray(arr: []): T[]
 	{
 		return arr.map(this.fromApiObject);
+	}
+
+	private getOptions(temporaryHeaders: {}): {}
+	{
+		if ( ! temporaryHeaders )
+			return this.httpOptions;
+
+		if ( ! this.httpOptions )
+			return { headers: new HttpHeaders(temporaryHeaders) };
+		
+		let httpOptions= Object.assign({}, this.httpOptions); // make a copy of the options object
+		if ( ! httpOptions.headers )
+			httpOptions.headers= new HttpHeaders(temporaryHeaders);
+		else for ( const name in temporaryHeaders )
+				httpOptions.headers= httpOptions.headers.set(name, temporaryHeaders[name]);
+
+		return httpOptions;
 	}
 }

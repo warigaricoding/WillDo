@@ -11,6 +11,7 @@ import { TaskDetailComponent } from './tasks/task-detail.component';
 import { TaskListComponent } from './tasks/task-list.component';
 import { GroupListComponent } from './groups/group-list.component';
 import { GroupDetailComponent } from './groups/group-detail.component';
+import { AuthProvider } from './core/auth.service';
 
 /** information Angular uses to navigate between components based on the current URL */
 const appRoutes: Routes
