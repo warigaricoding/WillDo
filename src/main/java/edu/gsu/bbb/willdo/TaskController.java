@@ -1,59 +1,59 @@
 package edu.gsu.bbb.willdo;
 
-import java.util.List;
-import java.util.Optional;
-
+import java.util.*;	
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.*;
 
 @RestController
 @RequestMapping("/api")
 public class TaskController {
-
     @Autowired
     TaskRepository repository;
 
-    @GetMapping({ "/tasks", "/tasks/group/{group}" }) //get all tasks
-    public List<Task> all( @PathVariable(required= false) String group) {
-		if ( group != null )
-			return repository.findAllByGroup(group);
-        else return repository.findAll();
+/*	
+	@GetMapping("/tasks") // get all of a user's tasks
+	public List<Task> all(@org.springframework.security.core.annotation.AuthenticationPrincipal User user) {
+		ArrayList<Task> allTasks= new ArrayList<Task>();
+		for ( String groupId : user.getGroups() )
+			allTasks.addAll( repository.findAllByGroupId( groupId ) );
+		return allTasks;
+	}
+*/
+
+    @GetMapping("/tasks/group/{groupId}") //get one specific task
+    public List<Task> taskFromGroup(@PathVariable String groupId) {
+        return repository.findAllByGroupId(groupId); //Uses List from TaskRepository to generate queries by GroupId
     }
 
-	@GetMapping({ "/tasks/{id}", "/tasks/{id}/group/{group}" }) //get one specific task
-    public Optional<Task> task(@PathVariable String id, @PathVariable(required=false) String group) {
-        Optional<Task> findTask =  group != null ?  repository.findByIdAndGroup(id, group) : repository.findById(id);
-        Optional<Task> empty = Optional.empty(); //to see if it leaves loop
-
-        if(!findTask.isPresent()) {
-            //some response annotation; invalid parameters?
-        } else {
+    @GetMapping("/tasks/{taskId}")
+    public Optional<Task> findTask(@PathVariable String taskId){
+        Optional<Task> findTask = repository.findById(taskId);
+        Optional<Task> empty = Optional.empty();
+        if(!findTask.isPresent()){
+            return empty;
+        }else{
             return findTask;
         }
-        return empty; //should not return this ever
     }
 
     @PostMapping("/tasks") //saves new task as new doc in DB
     public Object newTask(@RequestBody Task newTask) {
-        Optional<Task> empty = Optional.empty(); //to see if it leaves loop
-        if(newTask.getSummary() == null){
-            //some response annotation; null values
-        } else {
-            return repository.save(newTask);
+        if(newTask.getGroupId() == null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Provide Group Id");
         }
-        return empty; //should not return this ever
+        if(newTask.getSummary() == null){
+            newTask.setSummary("New Task");
+        }
+        return repository.save(newTask);
     }
 
-    @PutMapping("/tasks/{id}") //updates task already in DB
-    public Task updateTask(@RequestBody Task newTask, @PathVariable String id) {
-		Optional<Task> oldTaskInfo;
-		String group= newTask.getGroup();
-		if ( group == null || group.isEmpty() )
-			oldTaskInfo= repository.findById(id);
-		else oldTaskInfo= repository.findByIdAndGroup(id, group);
-        if (oldTaskInfo.isPresent()) {
-            oldTaskInfo = oldTaskInfo
-                    .map(task -> {
+    @PutMapping("/tasks/{taskId}") //updates task already in DB
+    public Task updateTask(@RequestBody Task newTask, @PathVariable String taskId) {
+        if (repository.findById(taskId).isPresent()) {
+            Optional<Task> oldTaskInfo = repository.findById(taskId)
+                    .map(task -> { //Gets the data from the Optional and maps them to a new Task
                         if (newTask.getSummary() != null) {
                             task.setSummary(newTask.getSummary());
                         }
@@ -63,9 +63,11 @@ public class TaskController {
                         if (newTask.getDate() != null) {
                             task.setDate(newTask.getDate());
                         }
-                        if (newTask.isState() != task.isState()
-                                && ( newTask.isState() || true )) {
+                        if (newTask.isState() != task.isState()) {
                             task.setState(newTask.isState());
+                        }
+                        if (newTask.getGroupId() != null) {
+                            task.setGroupId(newTask.getGroupId());
                         }
                         return repository.save(task);
                     });
@@ -73,10 +75,10 @@ public class TaskController {
         return newTask; //sends original request body so we can see what broke it
     }
 
-	@DeleteMapping({ "/tasks/{id}", "/tasks/{id}/group/{group}" }) //delete task
-    public void delete(@PathVariable String id, @PathVariable(required=false) String group) {
-		if ( group != null )
-			repository.deleteByIdAndGroup(id, group);
-		else repository.deleteById(id); 
+	@DeleteMapping({ "/tasks/{taskId}", "/tasks/{taskId}/group/{groupId}" }) //delete task
+    public void delete(@PathVariable String taskId, @PathVariable(required=false) String groupId) {
+		if ( groupId != null )
+			repository.deleteByIdAndGroupId(taskId, groupId);
+		else repository.deleteById(taskId); 
     }
 }

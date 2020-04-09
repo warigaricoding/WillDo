@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import { interval, Observable, combineLatest } from 'rxjs';
+import { interval, Observable, combineLatest, Subscription } from 'rxjs';
 import { startWith, switchMap } from 'rxjs/operators';
 
 import { TaskService } from './tasks.service'; // this service handles all the task-related server communications for us
@@ -62,11 +62,13 @@ import { Task } from './task-class';
 export class TaskListComponent implements OnInit {
 
 	tasks: Task[];
+	subscription: Subscription;
 
 	constructor(private taskService: TaskService, private activateRoute: ActivatedRoute) { }
 
 	ngOnInit() {
 		// update the current group whenever the view switches or whenever 500 ms has elapsed
+		this.subscription=
 		combineLatest( interval(500).pipe(startWith(0)), this.activateRoute.paramMap )
 			.pipe( switchMap( x => this.request(x[1]) ) )
 			.subscribe( tasks => this.onRequestReturn(tasks) );
@@ -105,6 +107,10 @@ export class TaskListComponent implements OnInit {
 	trackById(index: number, item: Task): string
 	{
 		return item.id;
+	}
+
+	ngOnDestroy() {
+		this.subscription.unsubscribe();
 	}
 
 }

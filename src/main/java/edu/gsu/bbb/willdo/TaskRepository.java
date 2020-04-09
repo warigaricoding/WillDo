@@ -2,12 +2,14 @@ package edu.gsu.bbb.willdo;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 
+import java.util.List;
+import java.util.Optional;
+
 public interface TaskRepository extends MongoRepository <Task, String> {
 
-	java.util.List<Task> findAllByGroup(String group);
+	List<Task> findAllByGroupId(String groupId); //Allows for group query of tasks by groupId
+	void deleteByGroupId(String groupId); //Allows for group deletion of tasks by groupId
 
-	java.util.Optional<Task> findByIdAndGroup(String id, String group);
-
-	void deleteByIdAndGroup(String id, String group);
-
+	Optional<Task> findByIdAndGroupId(String id, String groupId);
+	void deleteByIdAndGroupId(String id, String groupId);
 }

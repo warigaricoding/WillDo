@@ -5,19 +5,27 @@ import org.springframework.data.mongodb.core.index.Indexed;
 
 public class Task {
     @Id
-    private String id;
+    private String id; //Only used for PutMapping
+
+	@Indexed
+	private String groupId; //Key to linking a task to a group, should be null until instantiated
 
     private String summary;
     private String description;
-    private String date;
+    private String date;    
     private boolean state;
 
-	@Indexed
-    private String group;
+	public String group;
 
     public Task() {}
 
-    public String getId() { return id; }
+    public void setId(String id){
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
+    }
 
     public String getSummary() {
         return summary;
@@ -51,7 +59,11 @@ public class Task {
         this.state = state;
     }
 
-	public String getGroup() {
-		return this.group;
-	}
+    public String getGroupId(){
+        return this.groupId;
+    }
+
+    public void setGroupId(String id){
+        this.groupId = id;
+    }
 }

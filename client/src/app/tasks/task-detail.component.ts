@@ -103,7 +103,7 @@ export class TaskDetailComponent implements OnInit
 			this.init= true; // our task is ready!
 		else {
 			this.task= new Task(taskId, groupId);
-			this.taskService.get(taskId, groupId)
+			this.taskService.get(taskId, /* groupId*/) // task controller should require groupId when getting for security!!!
 							.subscribe(
 								task => {
 									this.task= task;

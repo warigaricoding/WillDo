@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of, combineLatest } from 'rxjs'; // asynchronous event-based library
-import { catchError, startWith, switchMap, map } from 'rxjs/operators';
+import { catchError, switchMap, map } from 'rxjs/operators';
 
 import { Task } from './task-class';
 import { GroupService } from '../groups/groups.service';
@@ -20,6 +20,7 @@ export class TaskService extends ApiService<Task>
 		super(http, new ApiHelper( Task ));
 		this.baseURL+= "tasks";
 		this.entityName= "group"; // tells the base class what prefix to use when group-specific is needed
+		this.getAllPerGroup= this._getAllPerGroup.bind(this);
 	}
 
 	getAll(entityId?: string): Observable<Task[]>
@@ -34,7 +35,8 @@ export class TaskService extends ApiService<Task>
 		return super.delete(task);
 	}
 
-	private getAllPerGroup(): Observable<Task[]>
+	private readonly getAllPerGroup: () => Observable<Task[]>;
+	private _getAllPerGroup(this: TaskService): Observable<Task[]>
 	{
 		return this.groupService.getAll()
 								.pipe(
@@ -42,8 +44,7 @@ export class TaskService extends ApiService<Task>
 										groups =>
 										combineLatest( // combines each observable list of tasks into a single observable
 											groups.map( // transforms each group into a list of tasks
-												group =>
-												group.id && this.getAll(group.id).pipe(startWith( [] as Task[] ))
+												group => group.id && this.getAll(group.id)
 													// checks if the group has an id before requesting its list of tasks
 											)
 										)

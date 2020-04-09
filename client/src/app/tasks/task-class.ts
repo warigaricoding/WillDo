@@ -14,7 +14,7 @@ export class Task
 	id: string;
 	
 	/** the group or entity this task was created for (id) */
-	@ApiProperty("group")
+	@ApiProperty("groupId")
 	owner: string;
 
 	@ApiProperty("state", "boolean")
@@ -93,14 +93,14 @@ export class Task
 			console.log(this); // for debugging
 			
 			const version= ++this.version; // here we let any `onUpdate` callbacks know that the task has changed
-			taskService.update(this/*, this.owner*/)
+			taskService.update(this)
 			           .subscribe( task => this.onUpdate(task, version) );
 		}
 		else if ( this.version )
 			this.version= TaskState.ChangedDuringCreation; // this tells us the task has changed while being added to the server
 		else if ( submit )
 			this.version= TaskState.StillBeingAdded, // this tells us the task is being added to the server
-			taskService.add(this/*, this.owner*/) // send the new task to the server
+			taskService.add(this) // send the new task to the server
 			           .subscribe( task => this.onAdd(task, taskService) );
 
 	}

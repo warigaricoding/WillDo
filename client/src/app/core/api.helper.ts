@@ -44,7 +44,8 @@ export class ApiHelper<T>
 			
 		if ( this.properties )
 			for ( const prop of this.properties )
-				apiObj[ prop.apiName ]= obj[ prop.name ];
+				if ( obj[ prop.name ] !== "" ) // server doesn't like empty strings
+					apiObj[ prop.apiName ]= obj[ prop.name ];
 
 		if ( this.transformations )
 			for ( const transformation of this.transformations )
