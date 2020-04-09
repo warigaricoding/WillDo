@@ -15,8 +15,6 @@ public class Task {
     private String date;    
     private boolean state;
 
-	public String group;
-
     public Task() {}
 
     public void setId(String id){
