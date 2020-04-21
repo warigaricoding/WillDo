@@ -1,4 +1,4 @@
-package edu.gsu.bbb.willdo;
+package edu.gsu.bbb.willdo.models;
 
 import org.springframework.data.annotation.Id;
 
