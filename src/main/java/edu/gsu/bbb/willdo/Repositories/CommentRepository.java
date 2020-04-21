@@ -1,5 +1,6 @@
-package edu.gsu.bbb.willdo;
+package edu.gsu.bbb.willdo.Repositories;
 
+import edu.gsu.bbb.willdo.models.Comment;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;
