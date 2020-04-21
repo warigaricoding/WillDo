@@ -46,6 +46,12 @@ import { Task } from './task-class';
 						<ion-icon name="close-circle"></ion-icon>
 					</ion-chip>
 				</ion-item>
+
+				<ion-item>
+					<ion-label>Comments</ion-label>
+				</ion-item>
+				<comment-list [taskId]="task.id">
+				</comment-list>
 					
 			</ion-card-content>
 

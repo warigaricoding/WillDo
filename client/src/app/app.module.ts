@@ -9,6 +9,7 @@ import { IonicModule } from '@ionic/angular';
 import { AppComponent, DynamicView } from './app.component';
 import { TaskDetailComponent } from './tasks/task-detail.component';
 import { TaskListComponent } from './tasks/task-list.component';
+import { CommentListComponent } from './tasks/comments/comment-list.component';
 import { GroupListComponent } from './groups/group-list.component';
 import { GroupDetailComponent } from './groups/group-detail.component';
 import { AuthProvider } from './core/auth.service';
@@ -45,7 +46,8 @@ const appRoutes: Routes
 	TaskListComponent,
 	GroupListComponent,
 	TaskDetailComponent,
-	GroupDetailComponent
+	GroupDetailComponent,
+	CommentListComponent
   ],
   imports: [
     BrowserModule,
