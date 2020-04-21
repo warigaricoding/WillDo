@@ -4,6 +4,7 @@ import { startWith, switchMap } from 'rxjs/operators';
 
 import { CommentService } from './comments.service'; // this service handles all the task-related server communications for us
 import { Comment } from './comment-class';
+import { AuthService } from '../../core/auth.service';
 
 @Component({
 	selector: 'comment-list',
@@ -13,6 +14,19 @@ import { Comment } from './comment-class';
 			<ion-label slot="end">
 				{{ comment.date | date:'h a, MMMM d, y' }}
 			</ion-label>
+			<user-compact slot="end" [id]="comment.creator"></user-compact>
+		</ion-item>
+		<ion-item>
+			<ion-input [(ngModel)]="newComment.body" placeholder="[enter a comment]">
+			</ion-input>
+			<ion-buttons>
+				<ion-button (click)="addComment()" [disabled]="!newComment.body" [hidden]="addingComment">
+					<ion-icon name="send"></ion-icon>
+				</ion-button>
+				<ion-button (click)="cancelComment()" [hidden]="!addingComment" >
+					<ion-icon name="pause"></ion-icon>
+				</ion-button>
+			</ion-buttons>
 		</ion-item>
 	`,
 	styles: [ `
@@ -25,11 +39,18 @@ export class CommentListComponent implements OnInit
 	taskId: string;
 
 	comments: Comment[];
+	newComment: Comment;
 	subscription: Subscription;
+	addingComment: boolean
+	adddingCommentSubscription: Subscription;
 
-	constructor(private commentService: CommentService) { }
+	constructor(private commentService: CommentService, private authService: AuthService) { }
 
 	ngOnInit() {
+
+		// in case the user wants to comment on the current task
+		this.newComment= new Comment(this.taskId); 
+
 		// check for updated comments whenever 500 ms has elapsed
 		this.subscription=
 		interval(500).pipe(startWith(0))
@@ -47,6 +68,49 @@ export class CommentListComponent implements OnInit
 	/** sorts the list of tasks from the server and updates the view */
 	onRequestReturn(comments: Comment[]) {
 		this.comments= comments.sort(Comment.compare);
+	}
+
+	addComment()
+	{
+		this.newComment.date= new Date().toISOString(); // set the comment's date to right now
+		this.newComment.owner= this.taskId; // make sure that the comment is associated with the current task
+		if ( ! this.addingComment )
+			this.addingComment= true,
+			this.authService.getId().then( userId => this.onUserReturn(userId) ); // gets the user's current id
+	}
+
+	onUserReturn(userId: string)
+	{
+		if ( this.addingComment )
+		{
+			this.newComment.creator= userId;
+			if ( this.newComment.isValid() )
+				this.adddingCommentSubscription=
+					this.commentService.add( this.newComment )
+						.subscribe( comment => this.onAddReturn(comment), () => this.onAddError(), () => this.onAddFinally() );
+			else this.addingComment= false;
+		}
+	}
+
+	cancelComment()
+	{
+		if ( this.adddingCommentSubscription )
+			this.adddingCommentSubscription.unsubscribe();
+		this.onAddFinally();
+	}
+
+	onAddReturn(comment: Comment) {
+		this.comments.push( comment );
+		this.newComment= new Comment(this.taskId);
+	}
+
+	onAddError() {
+		this.onAddFinally();
+	}
+
+	onAddFinally() {
+		this.addingComment= false;
+		this.adddingCommentSubscription= null;
 	}
 
 	/** returns what makes each item unique to prevent UI repainting when new data is received */

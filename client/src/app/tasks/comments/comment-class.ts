@@ -8,10 +8,11 @@ export class Comment
 	body: string;
 
 	/** the date the comment was created/modified */
+	@ApiProperty("date", "datestring")
 	date: string;
 	
 	/** the task this comment was created for (id) */
-	@ApiProperty("task")
+	@ApiProperty("taskId")
 	owner: string;
 	
 	/** the user that created this comment */
@@ -27,6 +28,13 @@ export class Comment
 		this.creator= String( creator || "" );
 	}
 
+	isValid(): boolean
+	{
+		return  typeof this.body == "string"  &&  !! this.body
+				 &&  typeof this.owner == "string"  &&  !! this.owner
+				 &&  !! this.date
+			;
+	}
 
 	/** sorts tasks based on their date */
 	public static compare(a: Comment, b: Comment) {

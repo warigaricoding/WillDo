@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 /** the root of angular's component heirachy, displaying the entire application */
 @Component({
@@ -11,6 +11,11 @@ import { Component } from '@angular/core';
 					<ion-back-button></ion-back-button>
 				</ion-buttons>
 				<ion-title routerLink="/">WillDo</ion-title>
+				<ion-buttons slot="end">
+					<ion-button class="profile">
+						<user-compact showIcon showName></user-compact>
+					</ion-button>
+				</ion-buttons>
 			</ion-toolbar>
 		</ion-header>
 		<ion-split-pane when="md" contentId="mainView">
@@ -43,11 +48,18 @@ import { Component } from '@angular/core';
 		ion-split-pane {
 			margin-top: 56px;
 		}
+		.profile {
+			margin-right: 20px
+		}
 	`]
 })
-export class AppComponent
+export class AppComponent implements OnInit
 {
 	title= 'WillDo';
+	constructor(private authService: AuthService){}
+	ngOnInit() {
+		this.authService.canActivate();
+	}
 }
 
 
@@ -56,6 +68,7 @@ import { Type } from '@angular/core';
 import { Location } from '@angular/common';
 import { PopoverController, ModalController } from '@ionic/angular';
 import { ActivatedRoute, Route } from '@angular/router';
+import { AuthService } from './core/auth.service';
 /** Loads the given component in a context most friendly for the current screen */
 @Component({template:``})
 export class DynamicView

@@ -12,7 +12,11 @@ import { TaskListComponent } from './tasks/task-list.component';
 import { CommentListComponent } from './tasks/comments/comment-list.component';
 import { GroupListComponent } from './groups/group-list.component';
 import { GroupDetailComponent } from './groups/group-detail.component';
+import { UserManagementComponent } from './users/user-management.component';
+import { UserCompactComponent } from './users/user-compact.component';
+import { UserListComponent } from './users/user-list.component';
 import { AuthProvider } from './core/auth.service';
+
 
 /** information Angular uses to navigate between components based on the current URL */
 const appRoutes: Routes
@@ -47,7 +51,10 @@ const appRoutes: Routes
 	GroupListComponent,
 	TaskDetailComponent,
 	GroupDetailComponent,
-	CommentListComponent
+	CommentListComponent,
+	UserManagementComponent,
+	UserCompactComponent,
+	UserListComponent
   ],
   imports: [
     BrowserModule,
@@ -64,6 +71,7 @@ const appRoutes: Routes
   ],
   exports: [RouterModule],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [UserManagementComponent]
 })
 export class AppModule { }

@@ -34,24 +34,18 @@ import { Task } from './task-class';
 					<ion-textarea [(ngModel)]="task.description" (ionChange)="onChange()" auto-grow="true" rows="1"></ion-textarea>
 				</ion-item>
 
-				<ion-item>
-					<ion-label>Assigned To:</ion-label>
-					<ion-chip>
-						<ion-img>
 
-						</ion-img>
-						<ion-input>
-
-						</ion-input>
-						<ion-icon name="close-circle"></ion-icon>
-					</ion-chip>
-				</ion-item>
-
-				<ion-item>
+				<ion-item [hidden]="!task.id">
 					<ion-label>Comments</ion-label>
 				</ion-item>
-				<comment-list [taskId]="task.id">
+				<comment-list [taskId]="task.id" [hidden]="!task.id">
 				</comment-list>
+
+				<ion-item>
+					<ion-label>Assigned To:</ion-label>
+					<user-list [(children)]="task.assignedUsers">
+					</user-list>
+				</ion-item>
 					
 			</ion-card-content>
 

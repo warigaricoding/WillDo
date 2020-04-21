@@ -19,6 +19,8 @@ import { Group } from './group-class';
 
 				<ion-item>
 					<ion-label>Members:</ion-label>
+					<user-list [(children)]="group.members">
+					</user-list>
 				</ion-item>
 
 			</ion-card-content>
