@@ -1,18 +1,17 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 import { UserService } from './users.service';
-import { User } from './user-class';
 
 @Component({
 	selector: 'user-list',
 	template: `
-		<ion-chip *ngFor="let user of children; trackBy: trackById">
-			<user-compact editable showName [user]="user">
+		<ion-chip *ngFor="let userId of children">
+			<user-compact editable showName [(id)]="userId">
 			</user-compact>
-			<ion-icon name="close-circle" (click)="remove(user)"></ion-icon>
+			<ion-icon name="close-circle" (click)="remove(userId)"></ion-icon>
 		</ion-chip>
 		<ion-chip>
-			<user-compact editable>
+			<user-compact editable (idChange)="add($event)">
 			</user-compact>
 		</ion-chip>
 	`,
@@ -25,10 +24,10 @@ import { User } from './user-class';
 export class UserListComponent implements OnInit
 {
 	@Input()
-	children: User[];
+	children: string[];
 
 	@Output()
-	childrenChange= new EventEmitter<User[]>();
+	childrenChange= new EventEmitter<string[]>();
 
  	constructor(
 		protected userService: UserService
@@ -37,20 +36,24 @@ export class UserListComponent implements OnInit
 	// component is ready!
 	ngOnInit()
 	{
+		if ( ! this.children )
+			this.children= [];
 	}
 
 	update() {
 		this.childrenChange.emit(this.children);
 	}
 
-	remove(user: User) {
-		this.children.splice(this.children.indexOf(user), 1);
+	add(userId: string) {
+		if ( ! this.children )
+			this.children= [];
+		if ( ! this.children.includes(userId) )
+			this.children.push(userId);
 		this.update();
-	}
+	}	
 
-	/** returns what makes each item unique to prevent UI repainting when new data is received */
-	trackById(index: number, item: User): string
-	{
-		return item.id;
+	remove(userId: string) {
+		this.children.splice(this.children.indexOf(userId), 1);
+		this.update();
 	}
 }

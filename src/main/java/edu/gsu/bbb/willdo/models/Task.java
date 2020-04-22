@@ -2,6 +2,7 @@ package edu.gsu.bbb.willdo.models;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
+import java.util.List;
 
 public class Task {
     @Id
@@ -14,6 +15,7 @@ public class Task {
     private String description;
     private String date;    
     private boolean state;
+	private List<String> assignedUsers;
 
     public Task() {}
 
@@ -63,5 +65,13 @@ public class Task {
 
     public void setGroupId(String id){
         this.groupId = id;
+    }
+
+	public List<String> getAssignedUsers(){
+        return assignedUsers;
+    }
+
+	public void setAssignedUsers(List<String> assignedUsers){
+        this.assignedUsers = assignedUsers;
     }
 }

@@ -11,25 +11,26 @@ import { Group } from './group-class';
 		
 			<ion-card-header>
 				<ion-title class="ion-text-center">
-					<ion-input [(ngModel)]="group.displayName" placeholder="[enter group name]"></ion-input>
+					<ion-input [(ngModel)]="group.displayName" placeholder="[enter group name]" (keyup.enter)="submit()" autofocus="true">
+					</ion-input>
 				</ion-title>
 			</ion-card-header>
 
 			<ion-card-content>
 
 				<ion-item>
-					<ion-label>Members:</ion-label>
-					<user-list [(children)]="group.members">
-					</user-list>
+					<ion-label>Members</ion-label>
 				</ion-item>
-
+				<user-list [(children)]="group.members">
+				</user-list>
+			
 			</ion-card-content>
 
 			<ion-toolbar style="position:absolute;bottom:0px">
 				<ion-buttons slot="end">
 					<ion-button [routerLink]="{ outlets: { g: null } }">Cancel</ion-button>
 					<!-- since group-detail is in the 'g' outlet, navigating to null closes the view --> 
-					<ion-button type="submit" [disabled]="!group.isValid()" [routerLink]="{ outlets: { g: null } }" (click)="onSubmit()">
+					<ion-button type="submit" [disabled]="!group.isValid()" [routerLink]="{ outlets: { g: null } }" (click)="onSubmit()" fill="outline">
 						{{ group.id ?  'Update' : 'Create' }}
 					</ion-button>	
 				</ion-buttons>
@@ -42,6 +43,12 @@ import { Group } from './group-class';
 			margin: 0;
 			width: 100%;
 			height: 100%;
+		}
+		ion-item {
+			margin-bottom: 8px;
+		}
+		ion-label {
+			margin: auto 0 8px 0;
 		}
 	`]
 })
@@ -80,6 +87,11 @@ export class GroupDetailComponent implements OnInit
 	onSubmit() {
 		if ( this.group.isValid() )
 			this.group.pushChanges(this.groupService);
+	}
+
+	submit() {
+		this.onSubmit()
+		this.router.navigate([{ outlets: { g: null } }]);
 	}
 	
 }

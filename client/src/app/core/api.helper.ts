@@ -177,9 +177,9 @@ namespace apiHelper
 			return new Date ( obj || 0 ).toISOString();
 		}
 
-		static toObject(obj: any): object
+		static toObject(obj: any): any
 		{
-			return Object(obj);
+			return obj; //  obj != null ?  Object(obj) : null;
 		}
 
 		static toUndefined(obj: any): any // unknown type!

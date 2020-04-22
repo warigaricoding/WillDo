@@ -52,10 +52,8 @@ export class AuthService implements CanActivate {
 	}
 	
 	/** when the server returns with the current user */
-	public updateState(user: User): void
+	public updateState(user: User)
 	{
-		if ( this.modal )
-			this.modal.dismiss();
 		this.currentUser= user;
 		if ( ! this.isLoggedIn )
 			this.showLogin();
@@ -67,14 +65,19 @@ export class AuthService implements CanActivate {
 		if ( this.modal )
 			return ;
 		this.modal= await this.modalController
-						 .create( { component: UserManagementComponent, componentProps: { user: this.currentUser, authService: this } });
+						 .create( { component: UserManagementComponent, componentProps: { user: this.currentUser } });
 		this.modal.present(); // show the login view
 	}
 
-	public cancelLogin()
+	public hideLogin(): boolean
 	{
 		if ( this.modal )
+		{
 			this.modal.dismiss();
+			this.modal= null;
+			return true;
+		}
+		else return false;
 	}
 
 }

@@ -1,9 +1,8 @@
-import { Component, OnInit, Input, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, Output, ViewChild, EventEmitter } from '@angular/core';
 import { IonInput } from '@ionic/angular';
 
 import { UserService } from './users.service';
 import { User } from './user-class';
-import { interval } from 'rxjs';
 
 @Component({
 	selector: 'user-compact',
@@ -20,7 +19,7 @@ import { interval } from 'rxjs';
 				{{ user.displayName }}
 			</ion-label>
 		</div>
-		<ion-input #userInput placeholder="enter a username" [hidden]="!edit" [(ngModel)]="user.username" (ionBlur)="onBlur()" (keyup.enter)="onBlur()">
+		<ion-input #userInput placeholder="enter a username" [hidden]="!edit" [(ngModel)]="username" (ionBlur)="onBlur()" (keyup.enter)="onBlur()">
 		</ion-input>
 	`,
 	styles: [`
@@ -34,9 +33,6 @@ import { interval } from 'rxjs';
 		ion-icon {
 			font-size: 1.5em;
 		}
-		ion-avatar {
-			background-color: #F00
-		}
 	`]
 })
 export class UserCompactComponent implements OnInit
@@ -47,16 +43,31 @@ export class UserCompactComponent implements OnInit
 	@Input()
 	showName= false; // default input value
 
+	/** optional way to give the data this component needs to display */
 	@Input()
 	user: User;
 
+	/** optional way to specify the id this component uses to retrieve its user */
 	@Input()
 	id: string;
 
+	/** can this component's user be replaced? */
 	@Input()
 	editable: boolean;
 
+	/** notifies the parent of changes to this component's user */
+	@Output()
+	userChange= new EventEmitter<User>();
+
+	/** notifies the parent of changes to this component's user id */
+	@Output()
+	idChange= new EventEmitter<string>();
+
+	username: string;
+
+	/* can this component change its user */
 	edit: boolean;
+	private static: boolean;
 
 	@ViewChild("userInput", { static: true })
 	userInput: IonInput;
@@ -80,25 +91,39 @@ export class UserCompactComponent implements OnInit
 		if ( ! this.user )
 		{
 			this.user= new User();
-			if ( this.editable )
-				this.edit= true;
-			else {
-				 this.userService.get(this.id).subscribe( user => user && ( this.user= user ) );
-				 if ( !this.id)
-				 	interval(500).subscribe( () => this.userService.get().subscribe( user => user && ( this.user= user ) ) );
-			}
+			if ( this.editable && ! this.id )
+				this.edit= true,
+				this.static= true; // prevent the component from showing a user even though sends its current user to the parent
+			else this.userService.get(this.id).subscribe( user => this.onRequestReturn(user) );
 		}
 	}
 
+	/** allow the component's user to be changed */
 	onClick() {
 		if ( this.editable )
-			this.edit= true,
+			this.edit= true, // start editing the component's current user
 			this.userInput.setFocus();
 	}
 
+	/** when the component's user is done being changed */
 	onBlur() {
-		this.userService.getByName(this.user.username)
-			.subscribe( user => { if ( user ) { this.edit= false; this.user= user; } } );
+		this.userService.getByName(this.username)
+			.subscribe( user => this.onRequestReturn(user) );
+	}
+
+	/** when the server returns with this component's user */
+	onRequestReturn(user: User)
+	{
+		if ( user )
+		{
+			if ( this.static )
+				this.username= "";
+			else this.edit= false,
+				 this.user= user, // no longer editing the component's current user
+				 this.username= user.username;
+			this.userChange.emit(user); // notify the parent that the user has changed
+			this.idChange.emit(user.id); // notify the parent that the user id has changed
+		}
 	}
 
 	/** generate the user's initials from their display name */
@@ -114,7 +139,8 @@ export class UserCompactComponent implements OnInit
 	}
 
 	/** use the user's initials to generate their color and background-color */
-	getTextStyle() {
+	getTextStyle()
+	{
 		let initials= this.getInitials(),
 			shortA= initials.charCodeAt(0) || 0,
 			shortB= initials.charCodeAt(1) || 0,
@@ -133,6 +159,7 @@ export class UserCompactComponent implements OnInit
 		};
 	}
 
+	/** tells the template how to represent the user based on component input */
 	get showIconState(): number
 	{
 		if (  ! this.user  ||  ! this.showIcon && this.showIcon != null  )

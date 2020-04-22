@@ -8,8 +8,7 @@ start /b cmd /c mongod
 
 
 :: make sure the server is running
-cd %~dp0
-start /b cmd /c mvnw.cmd spring-boot:run
+start /d "%~dp0" /b cmd /c mvnw.cmd spring-boot:run
 
 
 :: make sure the client is running

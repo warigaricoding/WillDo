@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ParamMap } from '@angular/router';
+import { ParamMap, Router, ActivatedRoute } from '@angular/router';
+import { Location } from '@angular/common';
 
 import { TaskService } from './tasks.service';
 import { Task } from './task-class';
@@ -43,7 +44,7 @@ import { Task } from './task-class';
 
 				<ion-item>
 					<ion-label>Assigned To:</ion-label>
-					<user-list [(children)]="task.assignedUsers">
+					<user-list [(children)]="task.assignedUsers" (childrenChange)="onChange()">
 					</user-list>
 				</ion-item>
 					
@@ -59,7 +60,7 @@ import { Task } from './task-class';
 					<ion-button (click)="close()" slot="end">
 						<ion-label> {{ task.id ? 'Close' : 'Cancel' }} </ion-label>
 					</ion-button>
-					<ion-button fill="outline" [hidden]="!!task.id" (click)="onChange('submit');close()" [disabled]="!task.header">
+					<ion-button [hidden]="!!task.id" (click)="onChange('submit');close()" [disabled]="!task.header" fill="outline">
 						<ion-label>Create</ion-label>
 					</ion-button>
 				</ion-buttons>
@@ -86,8 +87,12 @@ export class TaskDetailComponent implements OnInit
 	@Input()
 	paramMap: ParamMap;
 
+	@Input()
+	route: ActivatedRoute;
+
  	constructor(
-		protected taskService: TaskService
+		protected taskService: TaskService,
+		protected location: Location
 	) {}
 
 	// component is ready!
@@ -135,6 +140,6 @@ export class TaskDetailComponent implements OnInit
 
 	/** goes back to the previous view */
 	close() {
-		window.history.back(); // temporary
+		this.location.back();
 	}
 }

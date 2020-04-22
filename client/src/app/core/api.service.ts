@@ -88,13 +88,13 @@ export class ApiService<T>
 	}
 
 	/** makes sure the class object is in a compatible format with the api interface */
-	private readonly toApiObject: ( obj: T ) => any;
+	protected readonly toApiObject: ( obj: T ) => any;
 
 	/** creates a new class object from the api interface, so the object methods, etc. work properly */
-	private readonly fromApiObject: ( obj: any ) => T;
+	protected readonly fromApiObject: ( obj: any ) => T;
 
 	/** creates a array of class objects, so data from the server can become object-oriented with working methods, etc. */
-	private readonly fromApiArray: ([]) => T[];
+	protected readonly fromApiArray: ([]) => T[];
 
 	private _fromApiArray(arr: []): T[]
 	{

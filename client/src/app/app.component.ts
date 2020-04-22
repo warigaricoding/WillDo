@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { Router, ActivatedRoute, Route } from '@angular/router';
 
 /** the root of angular's component heirachy, displaying the entire application */
 @Component({
@@ -12,7 +13,7 @@ import { Component, OnInit } from '@angular/core';
 				</ion-buttons>
 				<ion-title routerLink="/">WillDo</ion-title>
 				<ion-buttons slot="end">
-					<ion-button class="profile">
+					<ion-button class="profile" (click)="goToProfile()">
 						<user-compact showIcon showName></user-compact>
 					</ion-button>
 				</ion-buttons>
@@ -39,7 +40,7 @@ import { Component, OnInit } from '@angular/core';
 						< !--               (  see  'app/tasks/task-list.component.ts'  )               -- >
 						< !-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -- >
 					</task-list-->
-				</router-outlet>				
+				</router-outlet>			
 
 			</ion-content>
 		</ion-split-pane>
@@ -53,22 +54,28 @@ import { Component, OnInit } from '@angular/core';
 		}
 	`]
 })
-export class AppComponent implements OnInit
+export class AppComponent
 {
 	title= 'WillDo';
-	constructor(private authService: AuthService){}
-	ngOnInit() {
-		this.authService.canActivate();
+
+	constructor(
+		private router: Router,
+		private rootRoute: ActivatedRoute
+	) {
+	}
+
+	goToProfile() {
+		this.router.navigate(['profile'], { relativeTo: this.rootRoute.firstChild || this.rootRoute });
 	}
 }
 
 
 
+import { Subject } from 'rxjs';
+import { first } from 'rxjs/operators';
 import { Type } from '@angular/core';
 import { Location } from '@angular/common';
 import { PopoverController, ModalController } from '@ionic/angular';
-import { ActivatedRoute, Route } from '@angular/router';
-import { AuthService } from './core/auth.service';
 /** Loads the given component in a context most friendly for the current screen */
 @Component({template:``})
 export class DynamicView
@@ -79,16 +86,17 @@ export class DynamicView
 		private activatedRoute: ActivatedRoute
 	)
 	{
+		this.initLocation();
 		this.showInModal(activatedRoute.snapshot.data.baseComponent);
 	}
 
 	private async showInModal(component: Type<any>)
 	{
 		let modal= await this.modalController
-				   .create( { component: component, componentProps: { paramMap: this.activatedRoute.snapshot.paramMap } } );
+				   .create( { component: component, componentProps: { paramMap: this.activatedRoute.snapshot.paramMap, parentRoute: this.activatedRoute.parent } } );
 		modal.present(); // show the modal
 		modal.onWillDismiss().then( (e) => e.role == 'url' || this.location.back() ); // go backwards when the view is closed
-		this.location.onUrlChange( () => modal && modal.dismiss(modal= null, 'url') ); // closes the modal when the current URL changes
+		DynamicView.onLocationChange().then( () => modal.dismiss(modal, 'url') ); // closes the modal when the current URL changes
 	}
 
 	/** returns a Route configuration for mapping the given URL to the given component in a dynamic context */
@@ -101,5 +109,17 @@ export class DynamicView
 			outlet: outlet,
 			pathMatch: pathMatch
 		}
+	}
+
+	private static location: Subject<string>;
+	private initLocation() {
+		if ( ! DynamicView.location )
+		{
+			DynamicView.location= new Subject<string>();
+			this.location.onUrlChange( url => DynamicView.location.next(url) );
+		}
+	}
+	private static onLocationChange(): Promise<string> {
+		return DynamicView.location.pipe( first() ).toPromise(); // returns the first location change that occurs from this point forward
 	}
 }

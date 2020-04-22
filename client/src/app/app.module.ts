@@ -27,7 +27,8 @@ const appRoutes: Routes
 			component: TaskListComponent, // the main component when viewed for a specific group
 			children: [
 				DynamicView.createRoute('tasks', TaskDetailComponent), // the view for creating a new task
-				DynamicView.createRoute('tasks/:taskId', TaskDetailComponent) // the view for editing a task
+				DynamicView.createRoute('tasks/:taskId', TaskDetailComponent), // the view for editing a task
+				DynamicView.createRoute('profile', UserManagementComponent) // for viewing the current user profile
 			]
 		},
 		{
@@ -35,7 +36,8 @@ const appRoutes: Routes
 			component: TaskListComponent, // the main component when viewed for all groups
 			children: [
 				DynamicView.createRoute('tasks', TaskDetailComponent), // the default view for creating a new task
-				DynamicView.createRoute('tasks/:taskId', TaskDetailComponent) // the default view for editing a task
+				DynamicView.createRoute('tasks/:taskId', TaskDetailComponent), // the default view for editing a task
+				DynamicView.createRoute('profile', UserManagementComponent) // for viewing the current user profile
 			]
 		},
 		DynamicView.createRoute(':groupId', GroupDetailComponent, 'g'), // the view for modifying an existing group
@@ -65,13 +67,13 @@ const appRoutes: Routes
 		{
 			onSameUrlNavigation: 'reload',
 			anchorScrolling: 'enabled',
-			paramsInheritanceStrategy: 'always'
+			paramsInheritanceStrategy: 'always',
+			relativeLinkResolution: 'corrected'
 		}
 	)
   ],
   exports: [RouterModule],
   providers: [],
-  bootstrap: [AppComponent],
-  entryComponents: [UserManagementComponent]
+  bootstrap: [AppComponent]
 })
 export class AppModule { }

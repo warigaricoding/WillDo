@@ -13,7 +13,7 @@ export class Group
 	@ApiIgnore
 	avatar: string;
 
-	@ApiIgnore
+	@ApiProperty("users")
 	members: string[];
 
 	@ApiIgnore

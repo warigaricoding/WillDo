@@ -29,13 +29,12 @@ export class Task
 	description: string;
 
 	/** a list of string user ids */
-	@ApiIgnore
 	assignedUsers: string[];
 
 	@ApiIgnore
 	priority: number;
 
-	constructor(id?, owner?, status?, header?, dueDate?, description?) // '?' denotes an optional argument
+	constructor(id?, owner?, status?, header?, dueDate?, description?, assignedUsers?) // '?' denotes an optional argument
 	{
 		this.id= id;
 		this.owner= String( owner || "" );
@@ -43,6 +42,7 @@ export class Task
 		this.header= String( header || "" );
 		this.dueDate= new Date ( dueDate || Date.now() + 24*3600*1000 ).toISOString();
 		this.description= String( description || "" );
+		this.assignedUsers=  assignedUsers ?  Array.from(assignedUsers) : [];
 		
 		this.version= TaskState.UpToDate;
 	}

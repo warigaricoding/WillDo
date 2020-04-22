@@ -46,6 +46,9 @@ public class GroupController {
                         if(newGroup.getName() != null){
                             group.setName(newGroup.getName());
                         }
+						if (newGroup.getUsers() != null) {
+            				group.setUsers(newGroup.getUsers());
+    					}
                         return groupRepository.save(group);
                     });
         }

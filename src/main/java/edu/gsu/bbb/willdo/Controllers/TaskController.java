@@ -72,6 +72,9 @@ public class TaskController {
                         if (newTask.getGroupId() != null) {
                             task.setGroupId(newTask.getGroupId());
                         }
+                        if (newTask.getAssignedUsers() != null) {
+                            task.setAssignedUsers(newTask.getAssignedUsers());
+                        }
                         return repository.save(task);
                     });
         }
